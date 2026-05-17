@@ -2,24 +2,19 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  Pressable,
   TextInput,
   ScrollView,
   StyleSheet,
   Platform,
   Alert,
   useColorScheme,
+  Image,
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import Svg, { Path } from 'react-native-svg';
-import { PYKLR_MARK_PATH, PYKLR_MARK_VIEWBOX, PYKLR_WORDMARK_PATH, PYKLR_WORDMARK_VIEWBOX } from '@/assets/logos/pyklr-logo-paths';
 import { signInWithApple, signInWithGoogle, signInWithEmail } from '@/lib/auth';
-
-/**
- * Sign In Screen.
- * Self-contained design to ensure zero bundling/styling dependencies and high reliability.
- */
 
 const BRAND = {
   green: '#67BF69',
@@ -96,14 +91,13 @@ export default function SignInScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {/* Brand Lockup at Top Left */}
+        {/* Exact PNG Brand Lockup at Top Left */}
         <View style={styles.lockup}>
-          <Svg viewBox={PYKLR_MARK_VIEWBOX} width={18} height={25}>
-            <Path d={PYKLR_MARK_PATH} fill="#67BF69" />
-          </Svg>
-          <Svg viewBox={PYKLR_WORDMARK_VIEWBOX} width={59} height={17}>
-            <Path d={PYKLR_WORDMARK_PATH} fill={isDark ? BRAND.lime : BRAND.green} />
-          </Svg>
+          <Image
+            source={isDark ? require('@/assets/lee-picked/Logo White.png') : require('@/assets/lee-picked/Logo Color.png')}
+            style={{ width: 140, height: 49 }}
+            resizeMode="contain"
+          />
         </View>
 
         {/* Heading & Subtitle */}
@@ -112,17 +106,15 @@ export default function SignInScreen() {
 
         {/* Apple Sign-In (iOS only) */}
         {Platform.OS === 'ios' && (
-          <Pressable
+          <TouchableOpacity
+            activeOpacity={0.75}
             onPress={async () => {
               setLoading('apple');
               const { error } = await signInWithApple();
               setLoading(null);
               if (error) Alert.alert('Apple sign-in failed', error.message);
             }}
-            style={({ pressed }) => [
-              styles.btnSocial,
-              { backgroundColor: socialBg, borderColor: socialBorder, opacity: pressed ? 0.75 : 1 },
-            ]}
+            style={[styles.btnSocial, { backgroundColor: socialBg, borderColor: socialBorder }]}
           >
             <View style={styles.socialBtnContent}>
               <AppleIcon color={socialText} />
@@ -130,21 +122,19 @@ export default function SignInScreen() {
                 {loading === 'apple' ? 'Connecting…' : 'Continue with Apple'}
               </Text>
             </View>
-          </Pressable>
+          </TouchableOpacity>
         )}
 
         {/* Google Sign-In */}
-        <Pressable
+        <TouchableOpacity
+          activeOpacity={0.75}
           onPress={async () => {
             setLoading('google');
             const { error } = await signInWithGoogle();
             setLoading(null);
             if (error) Alert.alert('Google sign-in failed', error.message);
           }}
-          style={({ pressed }) => [
-            styles.btnSocial,
-            { backgroundColor: socialBg, borderColor: socialBorder, opacity: pressed ? 0.75 : 1 },
-          ]}
+          style={[styles.btnSocial, { backgroundColor: socialBg, borderColor: socialBorder }]}
         >
           <View style={styles.socialBtnContent}>
             <GoogleIcon />
@@ -152,7 +142,7 @@ export default function SignInScreen() {
               {loading === 'google' ? 'Connecting…' : 'Continue with Google'}
             </Text>
           </View>
-        </Pressable>
+        </TouchableOpacity>
 
         {/* Separator Divider */}
         <View style={styles.dividerRow}>
@@ -203,38 +193,40 @@ export default function SignInScreen() {
         />
 
         {/* Forgot Password wrap */}
-        <Pressable
+        <TouchableOpacity
+          activeOpacity={0.7}
           onPress={() =>
             Alert.alert('Reset password', 'Password reset will be available soon.')
           }
           style={styles.forgotWrap}
         >
           <Text style={[styles.forgot, { color: accentColor }]}>Forgot password?</Text>
-        </Pressable>
+        </TouchableOpacity>
 
         {/* Main Submit Button */}
-        <Pressable
+        <TouchableOpacity
+          activeOpacity={0.85}
           onPress={handleSubmit}
-          style={({ pressed }) => [
+          style={[
             styles.btnSubmit,
             isDark ? styles.btnDarkSubmit : styles.btnLightSubmit,
-            { opacity: pressed ? 0.85 : 1 },
           ]}
         >
           <Text style={[styles.btnText, isDark ? styles.btnTextDarkSubmit : styles.btnTextLightSubmit]}>
             {loading === 'email' ? 'Signing in…' : 'Sign in'}
           </Text>
-        </Pressable>
+        </TouchableOpacity>
 
         {/* Footer Navigation */}
-        <Pressable
+        <TouchableOpacity
+          activeOpacity={0.7}
           onPress={() => router.replace('/(auth)/sign-up')}
           style={styles.footerWrap}
         >
           <Text style={[styles.footer, { color: subColor }]}>
             No account yet? <Text style={{ color: accentColor, fontWeight: '700' }}>Create one</Text>
           </Text>
-        </Pressable>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -252,7 +244,6 @@ const styles = StyleSheet.create({
   lockup: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
     marginBottom: 28,
   },
   heading: {

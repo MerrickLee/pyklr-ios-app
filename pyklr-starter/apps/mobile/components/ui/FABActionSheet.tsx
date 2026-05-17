@@ -145,7 +145,7 @@ export function FABActionSheet({ visible, onClose }: FABSheetProps) {
             );
           })}
         </Pressable>
-      </Pressable
+      </Pressable>
     </Modal>
   );
 }

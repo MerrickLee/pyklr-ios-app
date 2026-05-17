@@ -1,15 +1,9 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet, useColorScheme, Image } from 'react-native';
+import { View, Text, StyleSheet, useColorScheme, Image, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import Svg, { Path } from 'react-native-svg';
 import { PYKLR_WORDMARK_PATH, PYKLR_WORDMARK_VIEWBOX } from '@/assets/logos/pyklr-logo-paths';
-
-/**
- * Splash screen.
- * Overhauled to match the high-fidelity design mockups perfectly in both themes.
- * Self-contained design to prevent NativeWind or hook dependency silent bundling failures.
- */
 
 const BRAND = {
   green: '#67BF69',
@@ -41,52 +35,47 @@ export default function SplashScreen() {
             resizeMode="contain"
           />
           
-          {/* Razor-sharp vector wordmark */}
           <Svg viewBox={PYKLR_WORDMARK_VIEWBOX} width={138} height={40} style={styles.wordmarkSvg}>
             <Path d={PYKLR_WORDMARK_PATH} fill={isDark ? BRAND.lime : BRAND.green} />
           </Svg>
           
-          {/* Custom tracked tagline */}
           <Text style={[styles.tagline, { color: taglineColor }]}>
             MEET PLAYERS. START MATCHES.
           </Text>
         </View>
 
-        {/* Subtitle Description */}
         <Text style={[styles.subtitle, { color: subtitleColor }]}>
           Find players. Find courts.{'\n'}Find your game.
         </Text>
 
-        {/* Dynamic Theme Buttons */}
         <View style={styles.buttonGroup}>
-          <Pressable
+          <TouchableOpacity
+            activeOpacity={0.85}
             onPress={() => router.push('/(auth)/sign-up')}
-            style={({ pressed }) => [
+            style={[
               styles.btn,
               isDark ? styles.btnDarkTheme : styles.btnLightThemePrimary,
-              { opacity: pressed ? 0.85 : 1 },
             ]}
           >
             <Text style={[styles.btnText, isDark ? styles.btnTextDarkTheme : styles.btnTextLightThemePrimary]}>
               Get started
             </Text>
-          </Pressable>
+          </TouchableOpacity>
 
-          <Pressable
+          <TouchableOpacity
+            activeOpacity={0.75}
             onPress={() => router.push('/(auth)/sign-in')}
-            style={({ pressed }) => [
+            style={[
               styles.btn,
               isDark ? styles.btnDarkTheme : styles.btnLightThemeSecondary,
-              { opacity: pressed ? 0.75 : 1 },
             ]}
           >
             <Text style={[styles.btnText, isDark ? styles.btnTextDarkTheme : styles.btnTextLightThemeSecondary]}>
               I already have an account
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
 
-        {/* Proof/Audience text */}
         <Text style={[styles.proof, { color: proofColor }]}>
           Join 12,000+ players in the tri-state area
         </Text>
@@ -139,13 +128,12 @@ const styles = StyleSheet.create({
   },
   btn: {
     height: 52,
-    borderRadius: 26, // Perfect pill shape
+    borderRadius: 26,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  // Light Theme Styles
   btnLightThemePrimary: {
-    backgroundColor: '#0E0E0E', // Solid black
+    backgroundColor: '#0E0E0E',
   },
   btnLightThemeSecondary: {
     backgroundColor: 'transparent',
@@ -160,7 +148,6 @@ const styles = StyleSheet.create({
     color: '#0E0E0E',
     fontWeight: '700',
   },
-  // Dark Theme Styles (both buttons are dark/transparent with a thin white border)
   btnDarkTheme: {
     backgroundColor: 'rgba(255, 255, 255, 0.03)',
     borderWidth: 1.5,
