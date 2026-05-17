@@ -46,6 +46,26 @@ export default function EditProfileScreen() {
     }
   }
 
+  const googleAvatarUrl = user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
+  const hasNewGoogleAvatar = googleAvatarUrl && profile?.avatar_url !== googleAvatarUrl && avatarUrl !== googleAvatarUrl;
+
+  async function handleSyncGoogleAvatar() {
+    if (!user || !googleAvatarUrl) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from('profiles')
+      .update({ avatar_url: googleAvatarUrl })
+      .eq('id', user.id);
+      
+    setSaving(false);
+    if (error) {
+      Alert.alert('Sync failed', error.message);
+    } else {
+      setAvatarUrl(googleAvatarUrl);
+      queryClient.invalidateQueries({ queryKey: ['profile', user.id] });
+    }
+  }
+
   async function handleSave() {
     if (!user) return;
     setSaving(true);
@@ -116,6 +136,25 @@ export default function EditProfileScreen() {
           <Text style={{ fontSize: 12, color: c.textMuted, marginTop: 12 }}>
             Tap to change profile picture
           </Text>
+
+          {hasNewGoogleAvatar && (
+            <Pressable
+              onPress={handleSyncGoogleAvatar}
+              disabled={saving}
+              style={{
+                marginTop: 16,
+                paddingVertical: 8,
+                paddingHorizontal: 16,
+                backgroundColor: `${colors.brand.blue}22`,
+                borderRadius: 16,
+                opacity: saving ? 0.5 : 1,
+              }}
+            >
+              <Text style={{ color: colors.brand.blue, fontSize: 13, fontWeight: '600' }}>
+                Sync newest Google picture
+              </Text>
+            </Pressable>
+          )}
         </View>
 
         {/* Form Fields */}
