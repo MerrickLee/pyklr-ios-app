@@ -1,12 +1,12 @@
 import React from 'react';
-import { Pressable, Text, ActivityIndicator, type PressableProps } from 'react-native';
+import { TouchableOpacity, Text, ActivityIndicator, type TouchableOpacityProps } from 'react-native';
 import { useTheme } from '@/theme/useTheme';
 import { colors } from '@/theme/tokens';
 
 export type ButtonVariant = 'primary' | 'ghost' | 'secondary';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
-interface ButtonProps extends Omit<PressableProps, 'children'> {
+interface ButtonProps extends Omit<TouchableOpacityProps, 'children'> {
   label: string;
   variant?: ButtonVariant;
   size?: ButtonSize;
@@ -55,9 +55,10 @@ export function Button({
   }
 
   return (
-    <Pressable
+    <TouchableOpacity
+      activeOpacity={0.8}
       disabled={disabled || loading}
-      style={({ pressed }) => ({
+      style={{
         height: heights[size],
         paddingHorizontal: paddings[size],
         borderRadius: 16,
@@ -68,9 +69,9 @@ export function Button({
         alignItems: 'center',
         justifyContent: 'center',
         gap: 8,
-        opacity: disabled ? 0.5 : pressed ? 0.85 : 1,
+        opacity: disabled ? 0.5 : 1,
         width: fullWidth ? '100%' : undefined,
-      })}
+      }}
       {...rest}
     >
       {loading ? (
@@ -89,6 +90,6 @@ export function Button({
           </Text>
         </>
       )}
-    </Pressable>
+    </TouchableOpacity>
   );
 }
