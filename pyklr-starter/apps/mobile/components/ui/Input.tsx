@@ -27,11 +27,13 @@ export function Input({ label, error, leftIcon, style, ...rest }: InputProps) {
       <View
         style={{
           flexDirection: 'row',
-          alignItems: 'center',
+          alignItems: rest.multiline ? 'flex-start' : 'center',
           backgroundColor: c.surface2,
           borderRadius: 14,
           paddingHorizontal: 16,
-          height: 48,
+          paddingVertical: rest.multiline ? 12 : 0,
+          minHeight: 48,
+          height: rest.multiline ? undefined : 48,
           gap: 8,
           borderWidth: 1,
           borderColor: error ? '#E24B4A' : c.borderEmphasis,
