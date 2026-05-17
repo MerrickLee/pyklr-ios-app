@@ -63,27 +63,29 @@ function CustomTabBar({ state, navigation }: BottomTabBarProps & { onFabPress: (
 
         if (tab.isFab) {
           return (
-            <Pressable
+            <TouchableOpacity
               key="fab"
+              activeOpacity={0.85}
               onPress={(navigation as unknown as { onFabPress: () => void }).onFabPress}
-              style={({ pressed }) => ({
-                width: 48,
-                height: 48,
-                borderRadius: 24,
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: 28,
                 backgroundColor: fab,
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginTop: -22,
-                opacity: pressed ? 0.85 : 1,
+                marginTop: -32,
                 shadowColor: fab,
                 shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.4,
-                shadowRadius: 8,
-                elevation: 6,
-              })}
+                shadowOpacity: 0.6,
+                shadowRadius: 10,
+                elevation: 8,
+                borderWidth: 4,
+                borderColor: c.surface,
+              }}
             >
-              <Icon size={22} color={colors.brand.limeDark} strokeWidth={2.5} />
-            </Pressable>
+              <Icon size={26} color={isDark ? '#000000' : '#FFFFFF'} strokeWidth={3} />
+            </TouchableOpacity>
           );
         }
 
@@ -91,8 +93,9 @@ function CustomTabBar({ state, navigation }: BottomTabBarProps & { onFabPress: (
         const isFocused = state.index === routeIndex;
 
         return (
-          <Pressable
+          <TouchableOpacity
             key={tab.name}
+            activeOpacity={0.7}
             onPress={() => {
               const route = state.routes[routeIndex];
               const event = navigation.emit({
@@ -104,13 +107,14 @@ function CustomTabBar({ state, navigation }: BottomTabBarProps & { onFabPress: (
                 navigation.navigate(route.name, route.params);
               }
             }}
+            style={{ padding: 8 }}
           >
             <Icon
-              size={22}
+              size={24}
               color={isFocused ? primary : c.textFaint}
               strokeWidth={isFocused ? 2.5 : 2}
             />
-          </Pressable>
+          </TouchableOpacity>
         );
       })}
     </View>

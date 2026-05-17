@@ -60,7 +60,7 @@ export function FABActionSheet({ visible, onClose }: FABSheetProps) {
         onPress={onClose}
         style={{
           flex: 1,
-          backgroundColor: 'rgba(0, 0, 0, 0.4)',
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
           justifyContent: 'flex-end',
         }}
       >
@@ -68,22 +68,22 @@ export function FABActionSheet({ visible, onClose }: FABSheetProps) {
           onPress={(e) => e.stopPropagation()}
           style={{
             backgroundColor: c.surface,
-            borderTopLeftRadius: 28,
-            borderTopRightRadius: 28,
-            paddingHorizontal: 20,
+            borderTopLeftRadius: 32,
+            borderTopRightRadius: 32,
+            paddingHorizontal: 24,
             paddingTop: 16,
-            paddingBottom: 40,
+            paddingBottom: 48,
           }}
         >
           {/* Handle bar */}
           <View
             style={{
-              width: 36,
-              height: 4,
-              borderRadius: 2,
+              width: 40,
+              height: 5,
+              borderRadius: 3,
               backgroundColor: c.border,
               alignSelf: 'center',
-              marginBottom: 16,
+              marginBottom: 20,
             }}
           />
 
@@ -92,58 +92,60 @@ export function FABActionSheet({ visible, onClose }: FABSheetProps) {
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
-              marginBottom: 16,
+              marginBottom: 24,
             }}
           >
-            <Text style={{ fontSize: 16, fontWeight: '700', color: c.text }}>
-              Create
+            <Text style={{ fontSize: 22, fontFamily: 'Sink', color: c.text }}>
+              Create new
             </Text>
-            <Pressable onPress={onClose} hitSlop={12}>
+            <TouchableOpacity onPress={onClose} hitSlop={16} style={{ padding: 4, backgroundColor: c.surface2, borderRadius: 16 }}>
               <X size={20} color={c.textMuted} />
-            </Pressable>
+            </TouchableOpacity>
           </View>
 
           {actions.map((action, index) => {
             const Icon = action.icon;
             return (
-              <Pressable
+              <TouchableOpacity
                 key={action.label}
+                activeOpacity={0.7}
                 onPress={() => handleAction(action.route)}
-                style={({ pressed }) => ({
+                style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  gap: 14,
-                  paddingVertical: 14,
-                  borderTopWidth: index > 0 ? 0.5 : 0,
+                  gap: 16,
+                  paddingVertical: 18,
+                  borderTopWidth: index > 0 ? 1 : 0,
                   borderTopColor: c.border,
-                  opacity: pressed ? 0.7 : 1,
-                })}
+                }}
               >
                 <View
                   style={{
-                    width: 42,
-                    height: 42,
-                    borderRadius: 14,
-                    backgroundColor: `${action.color}22`,
+                    width: 52,
+                    height: 52,
+                    borderRadius: 16,
+                    backgroundColor: `${action.color}15`,
                     alignItems: 'center',
                     justifyContent: 'center',
+                    borderWidth: 1,
+                    borderColor: `${action.color}30`,
                   }}
                 >
-                  <Icon size={20} color={action.color} />
+                  <Icon size={24} color={action.color} />
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 15, fontWeight: '600', color: c.text }}>
+                  <Text style={{ fontSize: 17, fontWeight: '700', color: c.text }}>
                     {action.label}
                   </Text>
-                  <Text style={{ fontSize: 12, color: c.textMuted, marginTop: 2 }}>
+                  <Text style={{ fontSize: 13, color: c.textMuted, marginTop: 4 }}>
                     {action.subtitle}
                   </Text>
                 </View>
-              </Pressable>
+              </TouchableOpacity>
             );
           })}
         </Pressable>
-      </Pressable>
+      </Pressable
     </Modal>
   );
 }
