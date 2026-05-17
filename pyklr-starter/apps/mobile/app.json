@@ -1,0 +1,106 @@
+{
+  "expo": {
+    "name": "Pyklr",
+    "slug": "pyklr",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/logos/pyklr-app-icon.png",
+    "scheme": "pyklr",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/logos/pyklr-app-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#4493CC"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "app.pyklr.ios",
+      "associatedDomains": ["applinks:pyklr.app"],
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "PYKLR uses your location to show nearby pickleball courts and players.",
+        "NSCameraUsageDescription": "PYKLR uses the camera to take photos for your profile and to add new courts.",
+        "NSPhotoLibraryUsageDescription": "PYKLR uses your photo library to add a profile picture and court photos.",
+        "NSContactsUsageDescription": "PYKLR uses your contacts to help you invite friends to play.",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "app.pyklr.android",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logos/pyklr-app-icon-rounded.png",
+        "backgroundColor": "#4493CC"
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "POST_NOTIFICATIONS"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "pyklr.app"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/logos/pyklr-mark.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-secure-store",
+      "expo-apple-authentication",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "PYKLR needs access to your photos so you can add a profile picture and submit court photos.",
+          "cameraPermission": "PYKLR needs camera access so you can take a profile picture or photograph a court."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "PYKLR uses your location to find nearby pickleball courts and players."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/logos/pyklr-app-icon-rounded.png",
+          "color": "#67BF69"
+        }
+      ],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.860179123284-k5k7o8hmbvukvee5ok3jn0r049e7p9uj"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b9fafd08-47ca-4058-bf43-91b826b14961"
+      }
+    },
+    "owner": "merricklee"
+  }
+}

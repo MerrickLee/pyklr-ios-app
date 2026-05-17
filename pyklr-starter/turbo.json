@@ -1,0 +1,33 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalEnv": [
+    "EXPO_PUBLIC_SUPABASE_URL",
+    "EXPO_PUBLIC_SUPABASE_ANON_KEY",
+    "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS",
+    "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_ANDROID",
+    "EXPO_PUBLIC_SENTRY_DSN",
+    "EXPO_PUBLIC_AMPLITUDE_API_KEY",
+    "EXPO_PUBLIC_DEEP_LINK_SCHEME",
+    "EXPO_PUBLIC_UNIVERSAL_LINK_DOMAIN"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {},
+    "type-check": {
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "dependsOn": ["^build"]
+    },
+    "clean": {
+      "cache": false
+    }
+  }
+}

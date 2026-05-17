@@ -1,0 +1,19 @@
+{
+  "name": "@pyklr/supabase",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "supabase start",
+    "stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "db:push": "supabase db push --linked",
+    "db:pull": "supabase db pull --linked",
+    "db:diff": "supabase db diff -f new_migration --linked",
+    "gen:types": "supabase gen types typescript --linked > ../shared/types/database.ts",
+    "fn:serve": "supabase functions serve",
+    "fn:deploy": "supabase functions deploy"
+  },
+  "devDependencies": {
+    "supabase": "^1.180.0"
+  }
+}
