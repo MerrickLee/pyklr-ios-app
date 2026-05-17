@@ -48,7 +48,7 @@ function AuthGate() {
 
   // Auto-login test user in dev mode
   useEffect(() => {
-    const ENABLE_DEV_AUTOLOGIN = true; // Set to true to bypass login, false to test auth screens
+    const ENABLE_DEV_AUTOLOGIN = false; // Set to true to bypass login, false to test auth screens
     if (__DEV__ && ENABLE_DEV_AUTOLOGIN) {
       const testEmail = 'testuser123@example.com';
       const testPassword = 'TestPassword123!';
