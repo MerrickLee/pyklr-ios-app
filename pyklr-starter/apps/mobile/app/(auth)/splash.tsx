@@ -1,16 +1,14 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet, useColorScheme } from 'react-native';
+import { View, Text, Pressable, StyleSheet, useColorScheme, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import Svg, { Polygon, Ellipse, Circle, Rect } from 'react-native-svg';
+import Svg, { Path } from 'react-native-svg';
+import { PYKLR_WORDMARK_PATH, PYKLR_WORDMARK_VIEWBOX } from '@/assets/logos/pyklr-logo-paths';
 
 /**
  * Splash screen.
- *
- * Deliberately self-contained: no NativeWind classes, no dependency on the
- * shared Button or the useTheme() hook. Colors are hardcoded per scheme so
- * this screen physically cannot render empty/unstyled — it is the first
- * thing every user sees and must never break.
+ * Overhauled to match the high-fidelity design mockups perfectly in both themes.
+ * Self-contained design to prevent NativeWind or hook dependency silent bundling failures.
  */
 
 const BRAND = {
@@ -19,79 +17,77 @@ const BRAND = {
   lime: '#A8E66A',
   limeText: '#0A1F08',
   blue: '#4493CC',
-  cream: '#F1EDEC',
+  cream: '#FAFAF5',
 };
-
-function PyklrMark({ size = 58 }: { size?: number }) {
-  return (
-    <Svg viewBox="0 0 100 100" width={size} height={size}>
-      <Polygon points="6,14 6,82 60,48" fill={BRAND.blue} />
-      <Ellipse cx="50" cy="34" rx="25" ry="29" fill="none" stroke={BRAND.cream} strokeWidth={5} />
-      <Circle cx="33" cy="34" r="12" fill="none" stroke={BRAND.cream} strokeWidth={4} />
-      <Circle cx="28" cy="32" r={2} fill={BRAND.cream} />
-      <Circle cx="35" cy="30" r={2} fill={BRAND.cream} />
-      <Circle cx="33" cy="38" r={2} fill={BRAND.cream} />
-      <Rect x="46" y="62" width="5" height="20" fill={BRAND.cream} />
-    </Svg>
-  );
-}
 
 export default function SplashScreen() {
   const router = useRouter();
   const isDark = useColorScheme() === 'dark';
 
-  const bg = isDark ? '#0B0B0B' : '#FAFAF7';
-  const wordmark = isDark ? BRAND.lime : BRAND.greenDark;
-  const tagline = isDark ? BRAND.lime : BRAND.blue;
-  const subtitle = isDark ? '#9A9A92' : '#7A7A72';
-  const primaryBg = isDark ? BRAND.lime : BRAND.green;
-  const ghostBorder = isDark ? 'rgba(255,255,255,0.22)' : 'rgba(0,0,0,0.2)';
-  const ghostText = isDark ? '#FFFFFF' : '#0E0E0E';
-  const proof = isDark ? '#666666' : '#A0A098';
+  // Theme-specific color values
+  const bg = isDark ? '#0E0E0E' : '#FAFAF5';
+  const taglineColor = isDark ? BRAND.lime : BRAND.blue;
+  const subtitleColor = isDark ? '#A1A19A' : '#52524E';
+  const proofColor = isDark ? '#6B7280' : '#9CA3AF';
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: bg }]}>
       <View style={styles.container}>
+        {/* Brand Lockup */}
         <View style={styles.brandBlock}>
-          <View style={styles.iconSquare}>
-            <PyklrMark size={58} />
-          </View>
-          <Text style={[styles.wordmark, { color: wordmark }]}>PYKLR</Text>
-          <Text style={[styles.tagline, { color: tagline, opacity: isDark ? 0.7 : 1 }]}>
+          <Image
+            source={require('@/assets/logos/pyklr-app-icon-rounded.png')}
+            style={styles.logoImage}
+            resizeMode="contain"
+          />
+          
+          {/* Razor-sharp vector wordmark */}
+          <Svg viewBox={PYKLR_WORDMARK_VIEWBOX} width={138} height={40} style={styles.wordmarkSvg}>
+            <Path d={PYKLR_WORDMARK_PATH} fill={isDark ? BRAND.lime : BRAND.green} />
+          </Svg>
+          
+          {/* Custom tracked tagline */}
+          <Text style={[styles.tagline, { color: taglineColor }]}>
             MEET PLAYERS. START MATCHES.
           </Text>
         </View>
 
-        <Text style={[styles.subtitle, { color: subtitle }]}>
+        {/* Subtitle Description */}
+        <Text style={[styles.subtitle, { color: subtitleColor }]}>
           Find players. Find courts.{'\n'}Find your game.
         </Text>
 
+        {/* Dynamic Theme Buttons */}
         <View style={styles.buttonGroup}>
           <Pressable
             onPress={() => router.push('/(auth)/sign-up')}
             style={({ pressed }) => [
               styles.btn,
-              { backgroundColor: primaryBg, opacity: pressed ? 0.85 : 1 },
+              isDark ? styles.btnDarkTheme : styles.btnLightThemePrimary,
+              { opacity: pressed ? 0.85 : 1 },
             ]}
           >
-            <Text style={[styles.btnText, { color: BRAND.limeText }]}>Get started</Text>
+            <Text style={[styles.btnText, isDark ? styles.btnTextDarkTheme : styles.btnTextLightThemePrimary]}>
+              Get started
+            </Text>
           </Pressable>
 
           <Pressable
             onPress={() => router.push('/(auth)/sign-in')}
             style={({ pressed }) => [
               styles.btn,
-              styles.btnGhost,
-              { borderColor: ghostBorder, opacity: pressed ? 0.6 : 1 },
+              isDark ? styles.btnDarkTheme : styles.btnLightThemeSecondary,
+              { opacity: pressed ? 0.75 : 1 },
             ]}
           >
-            <Text style={[styles.btnText, { color: ghostText }]}>
+            <Text style={[styles.btnText, isDark ? styles.btnTextDarkTheme : styles.btnTextLightThemeSecondary]}>
               I already have an account
             </Text>
           </Pressable>
         </View>
 
-        <Text style={[styles.proof, { color: proof }]}>
+        {/* Proof/Audience text */}
+        <Text style={[styles.proof, { color: proofColor }]}>
           Join 12,000+ players in the tri-state area
         </Text>
       </View>
@@ -100,7 +96,9 @@ export default function SplashScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1 },
+  safe: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     paddingHorizontal: 28,
@@ -108,51 +106,77 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  brandBlock: { alignItems: 'center' },
-  iconSquare: {
-    width: 96,
-    height: 96,
-    backgroundColor: BRAND.green,
-    borderRadius: 24,
+  brandBlock: {
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 22,
+    marginBottom: 10,
   },
-  wordmark: {
-    fontSize: 38,
-    fontWeight: '900',
-    fontStyle: 'italic',
-    letterSpacing: -1,
-    lineHeight: 40,
+  logoImage: {
+    width: 108,
+    height: 108,
+    marginBottom: 20,
+  },
+  wordmarkSvg: {
+    marginBottom: 6,
   },
   tagline: {
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: '700',
     letterSpacing: 2,
-    marginTop: 6,
+    marginTop: 2,
   },
   subtitle: {
-    fontSize: 15,
+    fontSize: 16,
     textAlign: 'center',
-    lineHeight: 22,
-    marginTop: 28,
-    marginBottom: 36,
+    lineHeight: 23,
+    fontWeight: '500',
+    marginTop: 34,
+    marginBottom: 44,
   },
-  buttonGroup: { width: '100%', gap: 12 },
+  buttonGroup: {
+    width: '100%',
+    gap: 12,
+    paddingHorizontal: 4,
+  },
   btn: {
     height: 52,
-    borderRadius: 16,
+    borderRadius: 26, // Perfect pill shape
     alignItems: 'center',
     justifyContent: 'center',
   },
-  btnGhost: {
+  // Light Theme Styles
+  btnLightThemePrimary: {
+    backgroundColor: '#0E0E0E', // Solid black
+  },
+  btnLightThemeSecondary: {
     backgroundColor: 'transparent',
     borderWidth: 1.5,
+    borderColor: '#0E0E0E',
   },
-  btnText: { fontSize: 15, fontWeight: '600' },
+  btnTextLightThemePrimary: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+  },
+  btnTextLightThemeSecondary: {
+    color: '#0E0E0E',
+    fontWeight: '700',
+  },
+  // Dark Theme Styles (both buttons are dark/transparent with a thin white border)
+  btnDarkTheme: {
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    borderWidth: 1.5,
+    borderColor: '#FFFFFF',
+  },
+  btnTextDarkTheme: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+  },
+  btnText: {
+    fontSize: 15,
+  },
   proof: {
     fontSize: 11,
-    marginTop: 22,
+    marginTop: 24,
     textAlign: 'center',
+    fontWeight: '500',
   },
 });
