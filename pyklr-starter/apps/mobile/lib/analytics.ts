@@ -50,4 +50,5 @@ export type AnalyticsEvent =
   | 'forum.post_created'
   | 'forum.upvoted'
   | 'smart_suggestion.shown'
-  | 'smart_suggestion.accepted';
+  | 'smart_suggestion.accepted'
+  | 'ui.button_clicked';

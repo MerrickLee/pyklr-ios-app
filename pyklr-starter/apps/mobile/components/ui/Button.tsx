@@ -1,7 +1,8 @@
 import React from 'react';
-import { TouchableOpacity, Text, ActivityIndicator, type TouchableOpacityProps } from 'react-native';
+import { TouchableOpacity, Text, ActivityIndicator, type TouchableOpacityProps, type GestureResponderEvent } from 'react-native';
 import { useTheme } from '@/theme/useTheme';
 import { colors } from '@/theme/tokens';
+import { track } from '@/lib/analytics';
 
 export type ButtonVariant = 'primary' | 'ghost' | 'secondary';
 export type ButtonSize = 'sm' | 'md' | 'lg';
@@ -23,6 +24,7 @@ export function Button({
   fullWidth = true,
   disabled,
   icon,
+  onPress,
   ...rest
 }: ButtonProps) {
   const { scheme } = useTheme();
@@ -54,10 +56,22 @@ export function Button({
       break;
   }
 
+  function handlePress(e: GestureResponderEvent) {
+    track('ui.button_clicked', {
+      label,
+      variant,
+      size,
+    });
+    if (onPress) {
+      onPress(e);
+    }
+  }
+
   return (
     <TouchableOpacity
       activeOpacity={0.8}
       disabled={disabled || loading}
+      onPress={handlePress}
       style={{
         height: heights[size],
         paddingHorizontal: paddings[size],
