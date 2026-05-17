@@ -111,24 +111,25 @@ export default function ProfileScreen() {
 
         {/* Admin Dashboard */}
         {profile?.is_admin && (
-          <Card
-            variant="tint-green"
-            style={{ marginTop: 20 }}
-            onPress={() => router.push('/admin/dashboard')}
-          >
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 4 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                <Trophy size={18} color={primary} />
-                <View>
-                  <Text style={{ fontSize: 14, fontWeight: '700', color: c.text }}>Admin dashboard</Text>
-                  <Text style={{ fontSize: 11, color: c.textMuted, marginTop: 2 }}>
-                    Moderate courts, events, and reports
-                  </Text>
+          <Pressable onPress={() => router.push('/admin/dashboard')}>
+            <Card
+              variant="tint-green"
+              style={{ marginTop: 20 }}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 4 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                  <Trophy size={18} color={primary} />
+                  <View>
+                    <Text style={{ fontSize: 14, fontWeight: '700', color: c.text }}>Admin dashboard</Text>
+                    <Text style={{ fontSize: 11, color: c.textMuted, marginTop: 2 }}>
+                      Moderate courts, events, and reports
+                    </Text>
+                  </View>
                 </View>
+                <Text style={{ fontSize: 16, color: primary }}>→</Text>
               </View>
-              <Text style={{ fontSize: 16, color: primary }}>→</Text>
-            </View>
-          </Card>
+            </Card>
+          </Pressable>
         )}
 
         {/* Achievements */}
