@@ -15,8 +15,9 @@ import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 function CustomTabBar({ state, navigation }: BottomTabBarProps & { onFabPress: () => void }) {
   const { scheme, colors: c } = useTheme();
-  const primary = scheme === 'dark' ? colors.brand.lime : colors.brand.greenDark;
-  const fab = scheme === 'dark' ? colors.brand.lime : colors.brand.green;
+  const isDark = scheme === 'dark';
+  const primary = isDark ? colors.brand.lime : colors.brand.greenDark;
+  const fab = isDark ? colors.brand.lime : colors.brand.green;
 
   const tabs = [
     { name: 'index', icon: HomeIcon },
