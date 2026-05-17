@@ -84,6 +84,26 @@ See `GETTING_STARTED.md` for the full setup walkthrough including OAuth credenti
 
 See `docs/ARCHITECTURE.md` for the complete architectural rationale.
 
+## Future Roadmap & Enhancements
+
+1. **Live Weather Integration for Outdoor Courts**
+   Pickleball is highly weather-dependent. Integrating a simple weather API (like OpenWeather) on the Court Details page to show the current wind speed and rain forecast would save players from driving to a court only to find it's unplayable.
+
+2. **Built-in Scorekeeper & Match Logging**
+   A simple, swipe-based scorekeeper widget that players can use during their match. When the match finishes, it automatically logs the result to their profile history and updates their internal win/loss ratio.
+
+3. **Apple Health / Google Fit Integration**
+   Pickleball is a great workout. By integrating with HealthKit (iOS), the app could log matches as "Pickleball Workouts," automatically tracking calories burned and heart rate directly into the user's fitness rings.
+
+4. **"Smart" Push Notifications & Deep Linking**
+   If a user is near a popular court and it suddenly gets crowded, send a push notification. When they click the notification, use Deep Linking to open the app directly to that specific court's page.
+
+5. **Offline Capabilities**
+   Parks often have terrible cell service. By aggressively caching the user's active chats and the details/locations of their favorite courts, the app will remain functional even when they drop down to 1 bar of 3G.
+
+6. **Equipment & Gear Forum**
+   You already have a forum table structure. Building out a dedicated space for users to review paddles, shoes, and balls will keep them engaged in the app even when they aren't actively playing a match.
+
 ## License
 
 Proprietary. © 2026 PYKLR. All rights reserved.
