@@ -46,7 +46,7 @@ export function Button({
     case 'ghost':
       bg = 'transparent';
       fg = isDark ? '#FFFFFF' : '#0F0F0F';
-      borderColor = isDark ? '#262626' : '#E5E5E5';
+      borderColor = isDark ? 'rgba(255,255,255,0.22)' : 'rgba(0,0,0,0.2)';
       break;
     case 'secondary':
       bg = isDark ? '#1F1F1F' : '#F4F4F2';
@@ -62,7 +62,7 @@ export function Button({
         paddingHorizontal: paddings[size],
         borderRadius: 16,
         backgroundColor: bg,
-        borderWidth: borderColor ? 1 : 0,
+        borderWidth: borderColor ? 1.5 : 0,
         borderColor,
         flexDirection: 'row',
         alignItems: 'center',

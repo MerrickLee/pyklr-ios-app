@@ -1,31 +1,76 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Platform, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  TextInput,
+  ScrollView,
+  StyleSheet,
+  Platform,
+  Alert,
+  useColorScheme,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { PyklrLockup } from '@/components/brand/PyklrLogo';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import {
-  signInWithApple,
-  signInWithGoogle,
-  signUpWithEmail,
-} from '@/lib/auth';
-import { useTheme } from '@/theme/useTheme';
+import Svg, { Polygon, Ellipse, Circle, Rect } from 'react-native-svg';
+import { signInWithApple, signInWithGoogle, signUpWithEmail } from '@/lib/auth';
+
+const BRAND = {
+  green: '#67BF69',
+  greenDark: '#4FA547',
+  lime: '#A8E66A',
+  limeText: '#0A1F08',
+  blue: '#4493CC',
+};
+
+function PyklrLockupMark({ stroke }: { stroke: string }) {
+  return (
+    <Svg viewBox="0 0 100 100" width={26} height={26}>
+      <Polygon points="6,14 6,82 60,48" fill={BRAND.blue} />
+      <Ellipse cx="50" cy="34" rx="25" ry="29" fill="none" stroke={stroke} strokeWidth={6} />
+      <Circle cx="33" cy="34" r="12" fill="none" stroke={stroke} strokeWidth={5} />
+      <Rect x="46" y="62" width="5" height="20" fill={stroke} />
+    </Svg>
+  );
+}
 
 export default function SignUpScreen() {
   const router = useRouter();
-  const { colors: c } = useTheme();
+  const isDark = useColorScheme() === 'dark';
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [loading, setLoading] = useState<string | null>(null);
 
+  const bg = isDark ? '#0B0B0B' : '#FAFAF7';
+  const heading = isDark ? '#FFFFFF' : '#0E0E0E';
+  const sub = isDark ? '#888888' : '#8A8A82';
+  const wordmark = isDark ? BRAND.lime : BRAND.greenDark;
+  const markStroke = isDark ? BRAND.lime : BRAND.green;
+  const primaryBg = isDark ? BRAND.lime : BRAND.green;
+  const socialBg = isDark ? '#1C1C1C' : '#FFFFFF';
+  const socialBorder = isDark ? '#353535' : '#C9C7BD';
+  const socialText = isDark ? '#FFFFFF' : '#1A1A1A';
+  const inputBg = isDark ? '#1A1A1A' : '#EDEBE0';
+  const inputBorder = isDark ? '#2A2A2A' : '#DCDACF';
+  const inputText = isDark ? '#FFFFFF' : '#333333';
+  const placeholder = isDark ? '#777777' : '#999999';
+  const dividerLine = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.14)';
+  const fine = isDark ? '#666666' : '#A0A098';
+
   async function handleSubmit() {
-    if (!email || password.length < 8) {
-      Alert.alert('Check your input', 'Email and a password of 8+ characters are required.');
+    setPasswordError(null);
+    if (!email.trim()) {
+      Alert.alert('Email required', 'Please enter your email address.');
+      return;
+    }
+    if (password.length < 8) {
+      setPasswordError('Password must be at least 8 characters.');
       return;
     }
     setLoading('email');
-    const { error } = await signUpWithEmail(email, password);
+    const { error } = await signUpWithEmail(email.trim(), password);
     setLoading(null);
     if (error) {
       Alert.alert('Sign up failed', error.message);
@@ -49,69 +94,129 @@ export default function SignUpScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: c.bg }}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: bg }]}>
       <ScrollView
-        contentContainerStyle={{ padding: 24, gap: 14 }}
+        contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"
       >
-        <PyklrLockup size={24} />
-        <View style={{ marginTop: 8 }}>
-          <Text style={{ fontSize: 28, fontWeight: '700', color: c.text, lineHeight: 32 }}>
-            Create your{'\n'}account
-          </Text>
-          <Text style={{ fontSize: 13, color: c.textMuted, marginTop: 6 }}>
-            Join 12,000+ players nearby
-          </Text>
+        <View style={styles.lockup}>
+          <PyklrLockupMark stroke={markStroke} />
+          <Text style={[styles.lockupWord, { color: wordmark }]}>PYKLR</Text>
         </View>
 
+        <Text style={[styles.heading, { color: heading }]}>Create your{'\n'}account</Text>
+        <Text style={[styles.sub, { color: sub }]}>Join 12,000+ players nearby</Text>
+
         {Platform.OS === 'ios' && (
-          <Button
-            label="Continue with Apple"
-            variant="ghost"
-            loading={loading === 'apple'}
+          <Pressable
             onPress={handleApple}
-          />
+            style={({ pressed }) => [
+              styles.btn,
+              { backgroundColor: socialBg, borderColor: socialBorder, borderWidth: 1.5, opacity: pressed ? 0.7 : 1 },
+            ]}
+          >
+            <Text style={[styles.btnText, { color: socialText }]}>
+              {loading === 'apple' ? 'Connecting…' : ' Continue with Apple'}
+            </Text>
+          </Pressable>
         )}
-        <Button
-          label="Continue with Google"
-          variant="ghost"
-          loading={loading === 'google'}
+        <Pressable
           onPress={handleGoogle}
-        />
+          style={({ pressed }) => [
+            styles.btn,
+            { backgroundColor: socialBg, borderColor: socialBorder, borderWidth: 1.5, opacity: pressed ? 0.7 : 1 },
+          ]}
+        >
+          <Text style={[styles.btnText, { color: socialText }]}>
+            {loading === 'google' ? 'Connecting…' : 'Continue with Google'}
+          </Text>
+        </Pressable>
 
-        <Text style={{ textAlign: 'center', color: c.textFaint, fontSize: 12, marginVertical: 4 }}>
-          — or —
-        </Text>
+        <View style={styles.dividerRow}>
+          <View style={[styles.line, { backgroundColor: dividerLine }]} />
+          <Text style={[styles.dividerText, { color: placeholder }]}>or</Text>
+          <View style={[styles.line, { backgroundColor: dividerLine }]} />
+        </View>
 
-        <Input
-          placeholder="Email address"
+        <TextInput
           value={email}
           onChangeText={setEmail}
+          placeholder="Email address"
+          placeholderTextColor={placeholder}
           keyboardType="email-address"
           autoCapitalize="none"
           autoComplete="email"
+          style={[styles.input, { backgroundColor: inputBg, borderColor: inputBorder, color: inputText }]}
         />
-        <Input
-          placeholder="Password (min. 8 characters)"
+        <TextInput
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(t) => {
+            setPassword(t);
+            if (passwordError) setPasswordError(null);
+          }}
+          placeholder="Password"
+          placeholderTextColor={placeholder}
           secureTextEntry
           autoComplete="new-password"
+          style={[
+            styles.input,
+            {
+              backgroundColor: inputBg,
+              borderColor: passwordError ? '#E24B4A' : inputBorder,
+              color: inputText,
+            },
+          ]}
         />
-        <Button label="Sign up" loading={loading === 'email'} onPress={handleSubmit} />
+        {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
 
-        <Text
-          style={{
-            textAlign: 'center',
-            fontSize: 11,
-            color: c.textFaint,
-            marginTop: 4,
-            lineHeight: 16,
-          }}
+        <Pressable
+          onPress={handleSubmit}
+          style={({ pressed }) => [
+            styles.btn,
+            styles.primaryBtn,
+            { backgroundColor: primaryBg, opacity: pressed ? 0.85 : 1 },
+          ]}
         >
-          By signing up you agree to our{'\n'}Terms & Privacy Policy
+          <Text style={[styles.btnText, { color: BRAND.limeText }]}>
+            {loading === 'email' ? 'Creating account…' : 'Sign up'}
+          </Text>
+        </Pressable>
+
+        <Text style={[styles.fine, { color: fine }]}>
+          By signing up you agree to our{'\n'}Terms &amp; Privacy Policy
         </Text>
       </ScrollView>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safe: { flex: 1 },
+  scroll: { padding: 24, paddingTop: 18 },
+  lockup: { flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 20 },
+  lockupWord: { fontSize: 16, fontWeight: '900', fontStyle: 'italic', letterSpacing: -0.5 },
+  heading: { fontSize: 28, fontWeight: '700', lineHeight: 32 },
+  sub: { fontSize: 13, marginTop: 8, marginBottom: 20 },
+  btn: {
+    height: 50,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
+  primaryBtn: { marginTop: 4 },
+  btnText: { fontSize: 14, fontWeight: '600' },
+  dividerRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginVertical: 8 },
+  line: { flex: 1, height: 1 },
+  dividerText: { fontSize: 11 },
+  input: {
+    height: 50,
+    borderRadius: 14,
+    borderWidth: 1,
+    paddingHorizontal: 16,
+    fontSize: 14,
+    marginBottom: 10,
+  },
+  errorText: { color: '#E24B4A', fontSize: 12, marginTop: -4, marginBottom: 8 },
+  fine: { fontSize: 11, textAlign: 'center', marginTop: 14, lineHeight: 16 },
+});

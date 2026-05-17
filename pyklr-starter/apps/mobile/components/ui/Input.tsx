@@ -33,8 +33,8 @@ export function Input({ label, error, leftIcon, style, ...rest }: InputProps) {
           paddingHorizontal: 16,
           height: 48,
           gap: 8,
-          borderWidth: error ? 1 : 0,
-          borderColor: error ? '#E24B4A' : 'transparent',
+          borderWidth: 1,
+          borderColor: error ? '#E24B4A' : c.borderEmphasis,
         }}
       >
         {leftIcon}
