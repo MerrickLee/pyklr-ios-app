@@ -191,6 +191,7 @@ export default function ProfileScreen() {
               variant="ghost"
               size="md"
               icon={<Edit3 size={14} color={c.text} />}
+              onPress={() => router.push('/profile/edit' as never)}
             />
           </View>
           <View style={{ flex: 1 }}>
