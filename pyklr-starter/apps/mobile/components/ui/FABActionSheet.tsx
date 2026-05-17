@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Pressable, Modal } from 'react-native';
+import { View, Text, Pressable, Modal, TouchableOpacity } from 'react-native';
 import { Calendar, MapPin, MessageSquarePlus, X } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@/theme/useTheme';
