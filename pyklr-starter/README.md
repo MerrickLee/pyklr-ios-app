@@ -22,8 +22,9 @@ pyklr/
 └── GETTING_STARTED.md           # ← Start here
 ```
 
-## What works on Day 1
+## What works
 
+### Core Features (Day 1)
 - ✅ Sign up with email, Apple, or Google
 - ✅ Player survey (play styles, availability, DUPR rating)
 - ✅ Home dashboard with featured event card, quick actions, popular courts
@@ -35,15 +36,39 @@ pyklr/
 - ✅ Profile screen with real data from Supabase
 - ✅ Sign out
 
-## What's stubbed (TODO comments point to the right Phase)
+### Beta Readiness (July 2026)
+- ✅ **Facebook Login** — full OAuth flow via `react-native-fbsdk-next`, button on both sign-in & sign-up
+- ✅ **Chat moderation actions** — mute conversation, leave group (with confirmation), report (inserts into `reports` table)
+- ✅ **Account deletion** — 30-day soft-delete grace period (Apple App Store requirement)
+- ✅ **DM creation** — "Message" button on profiles finds or creates a DM chat
+- ✅ **Native share sheet** — share events with deep link (`pyklr.app/e/{id}`)
+- ✅ **`digest-mailer` edge function** — data export for GDPR/Apple compliance via Resend email
+- ✅ **`report-pipeline` edge function** — processes reports, auto-suspends after 5 reports, notifies admins
+- ✅ **Survey wizard** — complete 4-step flow (display name/city → play styles → availability → DUPR) with progress bar and draft persistence
+- ✅ **Settings sub-screens** — `privacy.tsx` (visibility, DM perms, matchmaking), `integrations.tsx` (DUPR, calendars), `account.tsx` (email, password, data export)
+
+## What's still stubbed
 
 - Map view with court pins (Phase 4)
 - Event creation wizard (Phase 6)
 - Forum (Phase 6)
-- Settings sub-screens (Phase 6)
-- Push notification token registration (Phase 7)
-- DUPR sync OAuth flow (Phase 7)
-- Admin dashboard (Phase 7)
+- DUPR sync OAuth flow (Phase 7 — pending partnership approval)
+- Message reactions / long-press emoji bar
+
+## What YOU still need to set up before TestFlight
+
+| Item | Where | Notes |
+|------|-------|-------|
+| **Facebook Developer App** | [developers.facebook.com](https://developers.facebook.com) | Add `EXPO_PUBLIC_FACEBOOK_APP_ID` + `FACEBOOK_CLIENT_TOKEN` to `.env.local` |
+| **`react-native-fbsdk-next`** | `pnpm add react-native-fbsdk-next` in `apps/mobile` | Code is written, dependency not yet installed |
+| **Enable Facebook in Supabase** | Supabase Dashboard → Auth → Providers | Add FB App ID + secret |
+| **Sentry DSN** | [sentry.io](https://sentry.io) | Create a React Native project, add DSN to `.env.local` |
+| **Amplitude API key** | [amplitude.com](https://amplitude.com) | Add to `.env.local` |
+| **Apple Developer Team ID** | [developer.apple.com](https://developer.apple.com) | Fill in `eas.json` → `appleTeamId` |
+| **App Store Connect App ID** | App Store Connect | Fill in `eas.json` → `ascAppId` |
+| **Google Play service account** | Google Play Console | JSON key for automated submissions |
+| **Resend API key** | [resend.com](https://resend.com) | For transactional email (digest-mailer) |
+| **Privacy policy + Terms** | Host at `pyklr.app/privacy` and `pyklr.app/terms` | Required for App Store review |
 
 ## Quickstart
 

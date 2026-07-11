@@ -13,6 +13,8 @@ import {
 } from 'lucide-react-native';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { format, isPast } from 'date-fns';
+import { Share } from 'react-native';
+
 import { Avatar } from '@/components/ui/Avatar';
 import { Card } from '@/components/ui/Card';
 import { Chip } from '@/components/ui/Chip';
@@ -181,9 +183,18 @@ export default function EventDetailScreen() {
           Event
         </Text>
         <Pressable
-          onPress={() => {
-            // TODO: native share sheet
-            Alert.alert('Share', 'Deep link sharing coming soon.');
+          onPress={async () => {
+            try {
+              const url = `https://pyklr.app/e/${id}`;
+              await Share.share({
+                message: event
+                  ? `Join me for ${event.name} on PYKLR! ${url}`
+                  : `Check out this event on PYKLR! ${url}`,
+                url,
+              });
+            } catch {
+              // User cancelled or share failed — no action needed
+            }
           }}
         >
           <Share2 size={18} color={c.textMuted} />

@@ -108,6 +108,44 @@ export async function signUpWithEmail(
   return { error };
 }
 
+export async function signInWithFacebook(): Promise<{ error: Error | null }> {
+  if (isExpoGo) {
+    return { error: new Error('Facebook Login is not supported in Expo Go. Please use a development build or email sign-in.') };
+  }
+
+  if (!process.env.EXPO_PUBLIC_FACEBOOK_APP_ID) {
+    return { error: new Error('Facebook App ID not configured. Add EXPO_PUBLIC_FACEBOOK_APP_ID to your .env.local file.') };
+  }
+
+  try {
+    const { LoginManager, AccessToken } = require('react-native-fbsdk-next');
+
+    // Request login with email permission
+    const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+
+    if (result.isCancelled) {
+      return { error: null }; // User cancelled — not really an error
+    }
+
+    // Get the access token
+    const tokenData = await AccessToken.getCurrentAccessToken();
+
+    if (!tokenData?.accessToken) {
+      return { error: new Error('No access token from Facebook') };
+    }
+
+    // Exchange Facebook token for a Supabase session
+    const { error } = await supabase.auth.signInWithIdToken({
+      provider: 'facebook',
+      token: tokenData.accessToken,
+    });
+
+    return { error };
+  } catch (e: unknown) {
+    return { error: e instanceof Error ? e : new Error('Facebook sign-in failed') };
+  }
+}
+
 export async function signOut(): Promise<void> {
   await supabase.auth.signOut();
 }

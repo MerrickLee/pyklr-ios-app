@@ -208,9 +208,68 @@ export default function PublicProfileScreen() {
                     label="Message"
                     variant="ghost"
                     size="md"
-                    onPress={() => {
-                      // TODO: create or navigate to DM
-                      Alert.alert('DM', 'Direct messaging coming soon.');
+                    onPress={async () => {
+                      if (!user || !profile) return;
+
+                      // Check if a DM chat already exists between these two users
+                      const { data: existingMembers } = await supabase
+                        .from('chat_members')
+                        .select('chat_id')
+                        .eq('user_id', user.id);
+
+                      let dmChatId: string | null = null;
+
+                      if (existingMembers && existingMembers.length > 0) {
+                        const chatIds = existingMembers.map((m) => m.chat_id);
+                        // Find a DM-type chat that both users belong to
+                        const { data: dmChats } = await supabase
+                          .from('chats')
+                          .select('id')
+                          .in('id', chatIds)
+                          .eq('type', 'dm');
+
+                        if (dmChats) {
+                          for (const chat of dmChats) {
+                            const { count } = await supabase
+                              .from('chat_members')
+                              .select('*', { count: 'exact', head: true })
+                              .eq('chat_id', chat.id)
+                              .eq('user_id', profile.id);
+                            if (count && count > 0) {
+                              dmChatId = chat.id;
+                              break;
+                            }
+                          }
+                        }
+                      }
+
+                      // If no existing DM, create one
+                      if (!dmChatId) {
+                        const { data: newChat, error } = await supabase
+                          .from('chats')
+                          .insert({
+                            type: 'dm',
+                            name: profile.display_name ?? profile.username,
+                            created_by: user.id,
+                          })
+                          .select('id')
+                          .single();
+
+                        if (error || !newChat) {
+                          Alert.alert('Error', 'Could not start a conversation. Please try again.');
+                          return;
+                        }
+
+                        dmChatId = newChat.id;
+
+                        // Add both users as members
+                        await supabase.from('chat_members').insert([
+                          { chat_id: dmChatId, user_id: user.id, role: 'member' },
+                          { chat_id: dmChatId, user_id: profile.id, role: 'member' },
+                        ]);
+                      }
+
+                      router.push(`/chat/${dmChatId}` as never);
                     }}
                     icon={<MessageCircle size={16} color={c.text} />}
                   />

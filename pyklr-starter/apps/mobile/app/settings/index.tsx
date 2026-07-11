@@ -170,59 +170,24 @@ export default function SettingsScreen() {
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}>
         {/* PRIVACY */}
         <SectionHeader label="PRIVACY" />
-        <ToggleRow
-          label="Show me to nearby players"
-          value={showNearby}
-          onValueChange={(v) => {
-            setShowNearby(v);
-            updateProfile({ available_to_match: v });
-          }}
-        />
-        <ToggleRow
-          label="Allow DMs from anyone"
-          value={allowDms}
-          onValueChange={(v) => {
-            setAllowDms(v);
-            updateProfile({ dm_permission: v ? 'anyone' : 'followers' });
-          }}
-        />
-        <ToggleRow
-          label='"Available to match" status'
-          value={availableToMatch}
-          onValueChange={(v) => {
-            setAvailableToMatch(v);
-            updateProfile({ available_to_match: v });
-          }}
+        <SettingsRow
+          label="Privacy & visibility"
+          subtitle="Profile visibility, DM permissions, matchmaking"
+          showChevron
+          onPress={() => router.push('/settings/privacy' as never)}
         />
 
         {/* INTEGRATIONS */}
         <SectionHeader label="INTEGRATIONS" />
         <SettingsRow
-          label="DUPR sync"
+          label="Connected services"
           subtitle={
             profile?.dupr_verified
-              ? `Connected · ${profile.dupr_rating ?? '—'}`
-              : 'Not connected'
+              ? `DUPR connected · ${profile.dupr_rating ?? '—'}`
+              : 'DUPR, Calendar, Notifications'
           }
-          rightText={profile?.dupr_verified ? '✓ ON' : 'Connect'}
-          onPress={() => {
-            // TODO Phase 7: DUPR OAuth flow
-            Alert.alert('DUPR Sync', 'OAuth integration coming in Phase 7.');
-          }}
-        />
-        <SettingsRow
-          label="Apple Calendar"
-          subtitle="Sync match invites"
-          rightText="Connect"
-          onPress={() => {
-            Alert.alert('Calendar Sync', 'Calendar integration coming in Phase 7.');
-          }}
-        />
-        <SettingsRow
-          label="Push notifications"
-          subtitle="Manage notification preferences"
           showChevron
-          onPress={() => router.push('/settings/notifications' as never)}
+          onPress={() => router.push('/settings/integrations' as never)}
         />
 
         {/* APPEARANCE */}
@@ -253,6 +218,12 @@ export default function SettingsScreen() {
         {/* ACCOUNT */}
         <SectionHeader label="ACCOUNT" />
         <SettingsRow
+          label="Account settings"
+          subtitle="Email, password, data export"
+          showChevron
+          onPress={() => router.push('/settings/account' as never)}
+        />
+        <SettingsRow
           label="Blocked users"
           subtitle="Manage your block list"
           showChevron
@@ -274,15 +245,43 @@ export default function SettingsScreen() {
           onPress={() => {
             Alert.alert(
               'Delete account?',
-              'This will permanently delete your profile, messages, and all data. This cannot be undone.',
+              'Your account will be scheduled for permanent deletion in 30 days. During this period, you can sign back in to cancel. After 30 days, your profile, messages, and all data will be permanently deleted.',
               [
                 { text: 'Cancel', style: 'cancel' },
                 {
                   text: 'Delete',
                   style: 'destructive',
-                  onPress: () => {
-                    // TODO: implement account deletion
-                    Alert.alert('Coming soon', 'Account deletion will be available in a future update.');
+                  onPress: async () => {
+                    if (!user) return;
+                    // Soft-delete: mark profile with deletion timestamp
+                    const deletionDate = new Date();
+                    deletionDate.setDate(deletionDate.getDate() + 30);
+
+                    const { error } = await supabase
+                      .from('profiles')
+                      .update({
+                        deleted_at: new Date().toISOString(),
+                        scheduled_deletion_at: deletionDate.toISOString(),
+                      })
+                      .eq('id', user.id);
+
+                    if (error) {
+                      Alert.alert('Error', 'Could not process your request. Please try again.');
+                      return;
+                    }
+
+                    Alert.alert(
+                      'Account scheduled for deletion',
+                      'Your account will be permanently deleted on ' +
+                        deletionDate.toLocaleDateString() +
+                        '. Sign back in within 30 days to cancel.',
+                      [
+                        {
+                          text: 'OK',
+                          onPress: () => signOut(),
+                        },
+                      ]
+                    );
                   },
                 },
               ]

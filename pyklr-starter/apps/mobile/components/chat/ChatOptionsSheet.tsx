@@ -1,13 +1,16 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { View, Text, Pressable, Modal } from 'react-native';
+import { View, Text, Pressable, Modal, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { X, VolumeX, Volume2, Users, LogOut, Flag, Settings } from 'lucide-react-native';
+import { useQueryClient } from '@tanstack/react-query';
+import { X, VolumeX, Volume2, Users, LogOut, Flag, Settings, BellOff } from 'lucide-react-native';
 import { Avatar } from '@/components/ui/Avatar';
 import { useTheme } from '@/theme/useTheme';
 import { colors } from '@/theme/tokens';
 import { useChatMembers } from '@/hooks/useChats';
 import { useChat } from '@/hooks/useChat';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/lib/supabase';
+import { track } from '@/lib/analytics';
 
 interface ChatOptionsSheetProps {
   visible: boolean;
@@ -30,10 +33,82 @@ export function ChatOptionsSheet({
   const { colors: c, scheme } = useTheme();
   const primary = scheme === 'dark' ? colors.brand.lime : colors.brand.green;
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const { data: members } = useChatMembers(chatId);
   const { mutedUserIds, toggleUserMute } = useChat(chatId);
 
   const [showMembers, setShowMembers] = useState(false);
+  const [conversationMuted, setConversationMuted] = useState(false);
+
+  async function handleMuteConversation() {
+    if (!user) return;
+    // Toggle conversation-level mute (silences notifications, doesn't hide messages)
+    const newMuted = !conversationMuted;
+    setConversationMuted(newMuted);
+
+    // Update the chat_members row to toggle notification silencing
+    await supabase
+      .from('chat_members')
+      .update({ notifications_muted: newMuted })
+      .eq('chat_id', chatId)
+      .eq('user_id', user.id);
+
+    track('chat.conversation_muted', { chat_id: chatId, muted: newMuted });
+    onClose();
+  }
+
+  function handleLeaveGroup() {
+    Alert.alert(
+      'Leave group',
+      `Are you sure you want to leave "${chatName}"? You won't receive messages from this group anymore.`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Leave',
+          style: 'destructive',
+          onPress: async () => {
+            if (!user) return;
+            await supabase
+              .from('chat_members')
+              .delete()
+              .eq('chat_id', chatId)
+              .eq('user_id', user.id);
+
+            track('chat.left_group', { chat_id: chatId });
+            queryClient.invalidateQueries({ queryKey: ['chats'] });
+            onClose();
+            router.back();
+          },
+        },
+      ]
+    );
+  }
+
+  function handleReport() {
+    Alert.alert(
+      'Report group',
+      'Report this group for inappropriate content? Our moderation team will review it.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Report',
+          style: 'destructive',
+          onPress: async () => {
+            if (!user) return;
+            await supabase.from('reports').insert({
+              reporter_id: user.id,
+              target_type: 'chat',
+              target_id: chatId,
+              reason: 'Reported by user from chat options menu',
+            });
+            track('chat.reported', { chat_id: chatId });
+            Alert.alert('Reported', 'Thank you. Our moderation team will review this group.');
+            onClose();
+          },
+        },
+      ]
+    );
+  }
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
@@ -155,31 +230,22 @@ export function ChatOptionsSheet({
                   action: () => setShowMembers(true),
                 },
                 {
-                  icon: VolumeX,
-                  label: 'Mute conversation',
+                  icon: conversationMuted ? Volume2 : BellOff,
+                  label: conversationMuted ? 'Unmute conversation' : 'Mute conversation',
                   color: c.text,
-                  action: () => {
-                    // TODO: implement conversation-level mute
-                    onClose();
-                  },
+                  action: handleMuteConversation,
                 },
                 {
                   icon: LogOut,
                   label: 'Leave group',
                   color: '#E24B4A',
-                  action: () => {
-                    // TODO: implement leave group
-                    onClose();
-                  },
+                  action: handleLeaveGroup,
                 },
                 {
                   icon: Flag,
                   label: 'Report',
                   color: '#E24B4A',
-                  action: () => {
-                    // TODO: navigate to report flow
-                    onClose();
-                  },
+                  action: handleReport,
                 },
               ].map((item, index) => {
                 const Icon = item.icon;
