@@ -33,7 +33,7 @@ export default function ChatThreadScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const chatId = id ?? '';
   const { user } = useAuth();
-  const { messages, mutedUserIds, loading, send } = useChat(chatId);
+  const { messages, mutedUserIds, loading, send, toggleReaction, getReactionsForMessage } = useChat(chatId);
   const { data: members } = useChatMembers(chatId);
   const { data: chatInfo } = useChatInfo(chatId);
   const { scheme, colors: c } = useTheme();
@@ -187,8 +187,10 @@ export default function ChatThreadScreen() {
 
             // Regular message — now with real sender names
             const sender = item.sender_id ? memberMap.get(item.sender_id) : null;
+            const messageReactions = getReactionsForMessage(item.id);
             return (
               <MessageBubble
+                messageId={item.id}
                 senderName={sender?.displayName ?? 'Unknown'}
                 senderAvatarUrl={sender?.avatarUrl}
                 body={item.body ?? ''}
@@ -198,6 +200,8 @@ export default function ChatThreadScreen() {
                     : ''
                 }
                 isOwn={isOwn}
+                reactions={messageReactions}
+                onReact={(emoji) => toggleReaction(item.id, emoji)}
               />
             );
           }}

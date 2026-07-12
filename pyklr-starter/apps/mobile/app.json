@@ -91,6 +91,15 @@
         {
           "iosUrlScheme": "com.googleusercontent.apps.860179123284-k5k7o8hmbvukvee5ok3jn0r049e7p9uj"
         }
+      ],
+      [
+        "react-native-fbsdk-next",
+        {
+          "appID": "EXPO_PUBLIC_FACEBOOK_APP_ID",
+          "clientToken": "FACEBOOK_CLIENT_TOKEN",
+          "displayName": "Pyklr",
+          "scheme": "fbEXPO_PUBLIC_FACEBOOK_APP_ID"
+        }
       ]
     ],
     "experiments": {
