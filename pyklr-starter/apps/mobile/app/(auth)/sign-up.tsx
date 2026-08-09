@@ -142,7 +142,7 @@ export default function SignUpScreen() {
 
         {/* Heading & Subtitle */}
         <Text style={[styles.heading, { color: headingColor }]}>Create your{'\n'}account</Text>
-        <Text style={[styles.sub, { color: subColor }]}>Join 12,000+ players nearby</Text>
+        <Text style={[styles.sub, { color: subColor }]}>Join players nearby</Text>
 
         {/* Apple Sign-In (iOS only) */}
         {Platform.OS === 'ios' && (
