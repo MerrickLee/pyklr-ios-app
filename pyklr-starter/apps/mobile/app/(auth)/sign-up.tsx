@@ -141,7 +141,13 @@ export default function SignUpScreen() {
         </View>
 
         {/* Heading & Subtitle */}
-        <Text style={[styles.heading, { color: headingColor }]}>Create your{'\n'}account</Text>
+        <Text
+          style={[styles.heading, { color: headingColor }]}
+          adjustsFontSizeToFit
+          numberOfLines={1}
+        >
+          Create your account
+        </Text>
         <Text style={[styles.sub, { color: subColor }]}>Join players nearby</Text>
 
         {/* Apple Sign-In (iOS only) */}
@@ -288,7 +294,6 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   lockup: {
-    flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 24,
   },
