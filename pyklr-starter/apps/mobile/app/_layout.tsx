@@ -22,6 +22,7 @@ if (process.env.EXPO_PUBLIC_SENTRY_DSN) {
     tracesSampleRate: 0.2,
     enableAutoSessionTracking: true,
     enableAutoPerformanceTracing: true,
+  });
 }
 
 LogBox.ignoreLogs([
