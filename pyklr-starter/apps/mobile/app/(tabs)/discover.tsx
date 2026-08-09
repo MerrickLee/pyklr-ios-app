@@ -1,9 +1,10 @@
 import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react';
-import { View, Text, Pressable, ScrollView, Dimensions, Linking, Platform } from 'react-native';
+import { View, Text, Pressable, ScrollView, Dimensions, Linking, Platform, TextInput, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import { Filter, List, Map as MapIcon, Navigation } from 'lucide-react-native';
+import { Filter, List, Map as MapIcon, Navigation, Search } from 'lucide-react-native';
+import * as Location from 'expo-location';
 import { Chip } from '@/components/ui/Chip';
 import { Card } from '@/components/ui/Card';
 import { Skeleton, SkeletonCard, EmptyState } from '@/components/ui/Skeleton';
@@ -132,6 +133,32 @@ export default function DiscoverScreen() {
   const [activeFilters, setActiveFilters] = useState<Set<FilterKey>>(new Set());
   const [selectedCourt, setSelectedCourt] = useState<Court | null>(null);
   const [hasAnimatedToUser, setHasAnimatedToUser] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+
+  async function handleSearch() {
+    if (!searchQuery.trim()) return;
+    setIsSearching(true);
+    try {
+      const results = await Location.geocodeAsync(searchQuery);
+      if (results && results.length > 0) {
+        const { latitude, longitude } = results[0];
+        mapRef.current?.animateToRegion({
+          latitude,
+          longitude,
+          latitudeDelta: 0.1,
+          longitudeDelta: 0.1,
+        }, 1000);
+      } else {
+        Alert.alert('Not found', 'Could not find that location.');
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to search for location.');
+    } finally {
+      setIsSearching(false);
+    }
+  }
 
   useEffect(() => {
     if (location && mapRef.current && !hasAnimatedToUser) {
@@ -271,6 +298,30 @@ export default function DiscoverScreen() {
       {/* Content */}
       {viewMode === 'map' ? (
         <View style={{ flex: 1, marginTop: 12, marginHorizontal: 16 }}>
+          {/* Search Bar */}
+          <View style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: c.surface2,
+            borderRadius: 16,
+            paddingHorizontal: 16,
+            paddingVertical: 10,
+            marginBottom: 12,
+          }}>
+            <Search size={18} color={c.textMuted} style={{ marginRight: 8 }} />
+            <TextInput
+              style={{ flex: 1, fontSize: 15, color: c.text, fontWeight: '500' }}
+              placeholder="Search city, state, or zip..."
+              placeholderTextColor={c.textMuted}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              onSubmitEditing={handleSearch}
+              returnKeyType="search"
+              clearButtonMode="while-editing"
+            />
+            {isSearching && <ActivityIndicator size="small" color={primary} />}
+          </View>
+
           {/* Map */}
           <View
             style={{
