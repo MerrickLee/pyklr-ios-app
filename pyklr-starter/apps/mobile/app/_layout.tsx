@@ -1,7 +1,7 @@
 import '@/global.css';
 import 'react-native-gesture-handler';
 import { useEffect } from 'react';
-import { Linking } from 'react-native';
+import { Linking, LogBox } from 'react-native';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
@@ -22,8 +22,11 @@ if (process.env.EXPO_PUBLIC_SENTRY_DSN) {
     tracesSampleRate: 0.2,
     enableAutoSessionTracking: true,
     enableAutoPerformanceTracing: true,
-  });
 }
+
+LogBox.ignoreLogs([
+  'No native splash screen registered for given view controller',
+]);
 
 SplashScreen.preventAutoHideAsync().catch(() => {
   // Ignore — splash screen may already be hidden

@@ -42,14 +42,39 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
+          <string>fbEXPO_PUBLIC_FACEBOOK_APP_ID</string>
+        </array>
+      </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
           <string>com.googleusercontent.apps.860179123284-k5k7o8hmbvukvee5ok3jn0r049e7p9uj</string>
         </array>
       </dict>
     </array>
     <key>CFBundleVersion</key>
     <string>1</string>
+    <key>FacebookAdvertiserIDCollectionEnabled</key>
+    <false/>
+    <key>FacebookAppID</key>
+    <string>EXPO_PUBLIC_FACEBOOK_APP_ID</string>
+    <key>FacebookAutoInitEnabled</key>
+    <false/>
+    <key>FacebookAutoLogAppEventsEnabled</key>
+    <false/>
+    <key>FacebookClientToken</key>
+    <string>FACEBOOK_CLIENT_TOKEN</string>
+    <key>FacebookDisplayName</key>
+    <string>Pyklr</string>
     <key>ITSAppUsesNonExemptEncryption</key>
     <false/>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>fbapi</string>
+      <string>fb-messenger-api</string>
+      <string>fbauth2</string>
+      <string>fbshareextension</string>
+    </array>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>NSAppTransportSecurity</key>
@@ -78,6 +103,17 @@
     <key>NSUserActivityTypes</key>
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
+    </array>
+    <key>SKAdNetworkItems</key>
+    <array>
+      <dict>
+        <key>SKAdNetworkIdentifier</key>
+        <string>v9wttpbfk9.skadnetwork</string>
+      </dict>
+      <dict>
+        <key>SKAdNetworkIdentifier</key>
+        <string>n38lu8286q.skadnetwork</string>
+      </dict>
     </array>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
