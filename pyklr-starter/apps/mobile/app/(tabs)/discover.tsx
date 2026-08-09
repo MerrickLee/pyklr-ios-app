@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import { View, Text, Pressable, ScrollView, Dimensions, Linking, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -131,6 +131,19 @@ export default function DiscoverScreen() {
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [activeFilters, setActiveFilters] = useState<Set<FilterKey>>(new Set());
   const [selectedCourt, setSelectedCourt] = useState<Court | null>(null);
+  const [hasAnimatedToUser, setHasAnimatedToUser] = useState(false);
+
+  useEffect(() => {
+    if (location && mapRef.current && !hasAnimatedToUser) {
+      mapRef.current.animateToRegion({
+        latitude: location.latitude,
+        longitude: location.longitude,
+        latitudeDelta: 0.08,
+        longitudeDelta: 0.08,
+      }, 1000);
+      setHasAnimatedToUser(true);
+    }
+  }, [location, hasAnimatedToUser]);
 
   const toggleFilter = useCallback((filter: FilterKey) => {
     setActiveFilters((prev) => {
