@@ -302,11 +302,13 @@ const styles = StyleSheet.create({
     fontFamily: 'Sink',
     lineHeight: 36,
     marginBottom: 6,
+    textAlign: 'center',
   },
   sub: {
     fontSize: 14,
     fontWeight: '500',
     marginBottom: 24,
+    textAlign: 'center',
   },
   btnSocial: {
     height: 52,
