@@ -1,3 +1,10 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+
+# Moved here from package.json's "pnpm" field: pnpm 10+ no longer reads that
+# field and was silently ignoring this patch. Without it, a clean install
+# restores the unpatched react-native-css-interop babel.js, which references
+# "react-native-worklets/plugin" and breaks the build on RN 0.74 / reanimated 3.
+patchedDependencies:
+  react-native-css-interop@0.2.4: patches/react-native-css-interop@0.2.4.patch

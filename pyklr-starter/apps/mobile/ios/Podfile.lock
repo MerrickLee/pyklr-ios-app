@@ -1665,7 +1665,7 @@ DEPENDENCIES:
   - "expo-dev-client (from `../../../node_modules/.pnpm/expo-dev-client@4.0.29_expo@51.0.39_@babel+core@7.29.0_@babel+preset-env@7.29.5_@babel+core@7_k4votcyoprwrrt63ec5qzyiley/node_modules/expo-dev-client/ios`)"
   - "expo-dev-launcher (from `../../../node_modules/.pnpm/expo-dev-launcher@4.0.29_expo@51.0.39_@babel+core@7.29.0_@babel+preset-env@7.29.5_@babel+core_rncnnjy5tp35gg6e4ucs4o2hey/node_modules/expo-dev-launcher`)"
   - "expo-dev-menu (from `../../../node_modules/.pnpm/expo-dev-menu@5.0.23_expo@51.0.39_@babel+core@7.29.0_@babel+preset-env@7.29.5_@babel+core@7.2_hsorv2saxprzqlshff6igmkanu/node_modules/expo-dev-menu`)"
-  - "expo-dev-menu-interface (from `../../../node_modules/.pnpm/expo-dev-menu-interface@1.8.4_expo@51.0.39_@babel+core@7.29.0_@babel+preset-env@7.29.5_@babel_kyjtrdqewvc32vfyin3utmfxlm/node_modules/expo-dev-menu-interface/ios`)"
+  - "expo-dev-menu-interface (from `../../../node_modules/.pnpm/expo-dev-menu-interface@1.8.4_expo@51.0.39_@babel+core@7.29.0_@babel+preset-env@7.29.5_@babel_cf74a3kdgipvznyyv2efn26oey/node_modules/expo-dev-menu-interface/ios`)"
   - "ExpoAdapterFBSDKNext (from `../../../node_modules/.pnpm/react-native-fbsdk-next@13.4.3_expo@51.0.39_@babel+core@7.29.0_@babel+preset-env@7.29.5_@babe_wwfesjn7aocmebneyq6qmc2yby/node_modules/react-native-fbsdk-next/ios`)"
   - "ExpoAdapterGoogleSignIn (from `../../../node_modules/.pnpm/@react-native-google-signin+google-signin@12.2.1_expo@51.0.39_@babel+core@7.29.0_@babel+prese_lmuklt3jka4z45wfmgirrokohu/node_modules/@react-native-google-signin/google-signin/expo/ios`)"
   - "ExpoAppleAuthentication (from `../../../node_modules/.pnpm/expo-apple-authentication@6.4.2_expo@51.0.39_@babel+core@7.29.0_@babel+preset-env@7.29.5_@bab_6zm2uoz3n4bhfc5fz3zdv5jpv4/node_modules/expo-apple-authentication/ios`)"
@@ -1802,7 +1802,7 @@ EXTERNAL SOURCES:
   expo-dev-menu:
     :path: "../../../node_modules/.pnpm/expo-dev-menu@5.0.23_expo@51.0.39_@babel+core@7.29.0_@babel+preset-env@7.29.5_@babel+core@7.2_hsorv2saxprzqlshff6igmkanu/node_modules/expo-dev-menu"
   expo-dev-menu-interface:
-    :path: "../../../node_modules/.pnpm/expo-dev-menu-interface@1.8.4_expo@51.0.39_@babel+core@7.29.0_@babel+preset-env@7.29.5_@babel_kyjtrdqewvc32vfyin3utmfxlm/node_modules/expo-dev-menu-interface/ios"
+    :path: "../../../node_modules/.pnpm/expo-dev-menu-interface@1.8.4_expo@51.0.39_@babel+core@7.29.0_@babel+preset-env@7.29.5_@babel_cf74a3kdgipvznyyv2efn26oey/node_modules/expo-dev-menu-interface/ios"
   ExpoAdapterFBSDKNext:
     :path: "../../../node_modules/.pnpm/react-native-fbsdk-next@13.4.3_expo@51.0.39_@babel+core@7.29.0_@babel+preset-env@7.29.5_@babe_wwfesjn7aocmebneyq6qmc2yby/node_modules/react-native-fbsdk-next/ios"
   ExpoAdapterGoogleSignIn:
