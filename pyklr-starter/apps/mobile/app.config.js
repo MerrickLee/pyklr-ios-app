@@ -112,6 +112,7 @@ export default {
       ],
       '@react-native-community/datetimepicker',
       '@sentry/react-native',
+      'expo-web-browser',
     ],
     experiments: {
       typedRoutes: true
