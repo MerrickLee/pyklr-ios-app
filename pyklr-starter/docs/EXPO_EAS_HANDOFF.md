@@ -211,3 +211,70 @@ resolved entry inside the project root.
 
 Backups left alongside each edit as `*.bak-entryfix`, `*.bak-patchfix`,
 `*.bak-ascids`. Safe to delete once verified.
+
+---
+
+## 7. Resolved — build pipeline working (2026-08-22, later)
+
+**Apple team mismatch: SOLVED via App Store Connect API key.**
+
+Root cause of the whole saga: `HDZQ7ZMG6T` is enrolled as an **Individual**
+Apple Developer account. Individual accounts have no team management, so
+`princemlee@aol.com` could never be added to the Developer Program team —
+even though it is a working App Store Connect Admin there. ASC access and
+Developer Program membership are separate lists.
+
+Fix: a team-scoped ASC API key, which authenticates directly into
+`HDZQ7ZMG6T` with no team picker, no password, no 2FA.
+
+| | |
+|---|---|
+| Key ID | `FD2GCSJFV7` (Admin access) |
+| Issuer ID | `720f72d6-2209-4796-acf7-60f62d6c89d6` |
+| Key path | `apps/mobile/credentials/ios/AuthKey_FD2GCSJFV7.p8` (gitignored) |
+
+`eas.json` `submit.production.ios` uses `ascApiKeyPath` / `ascApiKeyId` /
+`ascApiKeyIssuerId`. `appleId` was removed entirely.
+
+**IMPORTANT — build vs submit are different code paths.** The `ascApiKey*`
+fields in eas.json only cover submission. Build credentials require env vars:
+```bash
+export EXPO_ASC_KEY_ID=FD2GCSJFV7
+export EXPO_ASC_ISSUER_ID=720f72d6-2209-4796-acf7-60f62d6c89d6
+export EXPO_ASC_API_KEY_PATH="$PWD/credentials/ios/AuthKey_FD2GCSJFV7.p8"
+```
+Without these, `eas build` prompts "Do you want to log in to your Apple
+account?" and falls back to interactive login, which lands on the wrong team.
+
+First successful build: `d4619bf6-2ebb-4f6d-b980-00a045609996` (build number 8).
+
+### Version alignment (fixed)
+
+The first build shipped as `0.1.0` because `ios/Pyklr/Info.plist` hardcoded
+`CFBundleShortVersionString = 0.1.0`. In a bare workflow the native value
+wins; `app.config.js` `version` is ignored entirely. Now:
+
+| Location | Before | After |
+|---|---|---|
+| `ios/Pyklr/Info.plist` | `0.1.0` | `$(MARKETING_VERSION)` |
+| `Pyklr.xcodeproj` MARKETING_VERSION | `1.0` (x2) | `1.0.0` (x2) |
+| App Store Connect version record | `1.0` | `1.0.0` |
+| `app.config.js` version | `1.0.0` | `1.0.0` (unchanged) |
+
+All four now agree, and future version bumps happen only in MARKETING_VERSION.
+
+### STILL OPEN — do not ship without these
+
+1. **Facebook env vars are unset on EAS.** `eas build` reported: "No
+   environment variables with visibility Plain text and Sensitive found for
+   the production environment." So `app.config.js` falls through to its
+   placeholder defaults and ships `appID: '123456789012345'` /
+   `clientToken: 'dummy_client_token'`. Builds and passes review; Facebook
+   login fails for every user. Set them:
+   ```bash
+   eas env:create --environment production --name EXPO_PUBLIC_FACEBOOK_APP_ID --value <real>
+   eas env:create --environment production --name FACEBOOK_CLIENT_TOKEN --value <real> --visibility sensitive
+   ```
+2. **EU trader status** still unset in App Store Connect.
+3. **No payment card** on Ron's developer account — membership will not
+   auto-renew on July 12, 2027 and apps get pulled if it lapses.

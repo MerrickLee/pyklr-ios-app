@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import Svg, { Path } from 'react-native-svg';
 import { signInWithApple, signInWithGoogle, signInWithFacebook, signUpWithEmail } from '@/lib/auth';
+import { FACEBOOK_LOGIN_ENABLED } from '@/lib/features';
 
 const BRAND = {
   green: '#67BF69',
@@ -180,7 +181,9 @@ export default function SignUpScreen() {
           </View>
         </TouchableOpacity>
 
-        {/* Facebook Login */}
+        {/* Facebook Login — hidden behind FACEBOOK_LOGIN_ENABLED until real
+            Facebook credentials are configured. See lib/features.ts. */}
+        {FACEBOOK_LOGIN_ENABLED && (
         <TouchableOpacity
           activeOpacity={0.75}
           onPress={handleFacebook}
@@ -193,6 +196,7 @@ export default function SignUpScreen() {
             </Text>
           </View>
         </TouchableOpacity>
+        )}
 
         {/* Separator Divider */}
         <View style={styles.dividerRow}>

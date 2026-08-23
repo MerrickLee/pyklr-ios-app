@@ -49,3 +49,10 @@ coverage/
 # Supabase
 packages/supabase/.branches
 packages/supabase/.temp
+
+# Apple / EAS signing credentials — never commit
+*.p8
+*.p12
+*.mobileprovision
+*.cer
+credentials/

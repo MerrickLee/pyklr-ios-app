@@ -27,9 +27,11 @@
   "submit": {
     "production": {
       "ios": {
-        "appleId": "merricklee@me.com",
         "ascAppId": "6804323107",
-        "appleTeamId": "HDZQ7ZMG6T"
+        "appleTeamId": "HDZQ7ZMG6T",
+        "ascApiKeyPath": "./credentials/ios/AuthKey_FD2GCSJFV7.p8",
+        "ascApiKeyId": "FD2GCSJFV7",
+        "ascApiKeyIssuerId": "720f72d6-2209-4796-acf7-60f62d6c89d6"
       },
       "android": {
         "serviceAccountKeyPath": "./google-service-account.json",
