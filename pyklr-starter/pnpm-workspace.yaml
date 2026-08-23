@@ -2,13 +2,6 @@ packages:
   - 'apps/*'
   - 'packages/*'
 
-# NOTE: this patch is declared in BOTH pnpm-workspace.yaml and package.json's
-# "pnpm" field, on purpose. packageManager pins pnpm@9.0.0, which EAS Build
-# enforces via corepack — and pnpm 9 reads patchedDependencies ONLY from
-# package.json. pnpm 10 (what runs locally) reads it ONLY from here. Declaring
-# it in one place silently skips the patch on the other, which restores the
-# unpatched react-native-css-interop babel.js — it references
-# "react-native-worklets/plugin", a package this project removed, and the
-# Metro bundle then fails. Keep the two entries identical.
+# Single source of truth for pnpm 10+ (packageManager now pins pnpm@10.11.0).
 patchedDependencies:
   react-native-css-interop@0.2.4: patches/react-native-css-interop@0.2.4.patch

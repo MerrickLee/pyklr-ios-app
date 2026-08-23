@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "PYKLR — Meet players. Start matches. (monorepo root)",
-  "packageManager": "pnpm@9.0.0",
+  "packageManager": "pnpm@10.11.0",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
@@ -25,11 +25,6 @@
   },
   "engines": {
     "node": ">=20.0.0",
-    "pnpm": ">=9.0.0"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "react-native-css-interop@0.2.4": "patches/react-native-css-interop@0.2.4.patch"
-    }
+    "pnpm": ">=10.0.0"
   }
 }
