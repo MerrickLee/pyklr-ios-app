@@ -26,5 +26,10 @@
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=9.0.0"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "react-native-fbsdk-next@13.4.3": "patches/react-native-fbsdk-next@13.4.3.patch"
+    }
   }
 }
