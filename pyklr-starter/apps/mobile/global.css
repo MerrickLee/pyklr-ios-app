@@ -1,3 +1,40 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+@import "nativewind/theme";
+
+@theme {
+  /* PYKLR brand */
+  --color-brand-green: #67BF69;
+  --color-brand-green-dark: #4FA547;
+  --color-brand-green-light: #EAF5E5;
+  --color-brand-lime: #A8E66A;
+  --color-brand-lime-dark: #0A1F08;
+  --color-brand-blue: #4493CC;
+  --color-brand-blue-light: #E4F0F8;
+
+  /* Semantic */
+  --color-bg-light: #FAFAF7;
+  --color-bg-dark: #0B0B0B;
+  --color-surface-light: #FFFFFF;
+  --color-surface-dark: #161616;
+  --color-surface-dark-2: #1F1F1F;
+  --color-border-light: #F0F0F0;
+  --color-border-dark: #262626;
+  --color-text-light: #0F0F0F;
+  --color-text-light-muted: #666666;
+  --color-text-light-faint: #999999;
+  --color-text-dark: #FFFFFF;
+  --color-text-dark-muted: #9A9A9A;
+  --color-text-dark-faint: #666666;
+
+  /* Typography */
+  --font-sans: 'Inter', 'System';
+  --font-display: 'Inter', 'System';
+  --font-pixel: 'Sink', 'Courier New';
+
+  /* Border radius */
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 28px;
+}
