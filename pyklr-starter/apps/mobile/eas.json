@@ -7,6 +7,9 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
+      "env": {
+        "SENTRY_DISABLE_AUTO_UPLOAD": "true"
+      },
       "ios": {
         "simulator": true,
         "image": "macos-sequoia-15.6-xcode-26.2"
@@ -16,6 +19,9 @@
     "preview": {
       "distribution": "internal",
       "channel": "preview",
+      "env": {
+        "SENTRY_DISABLE_AUTO_UPLOAD": "true"
+      },
       "ios": {
         "simulator": false,
         "image": "macos-sequoia-15.6-xcode-26.2"
@@ -24,6 +30,9 @@
     "production": {
       "channel": "production",
       "autoIncrement": true,
+      "env": {
+        "SENTRY_DISABLE_AUTO_UPLOAD": "true"
+      },
       "ios": {
         "image": "macos-sequoia-15.6-xcode-26.2"
       }
