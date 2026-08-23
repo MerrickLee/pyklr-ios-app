@@ -113,15 +113,6 @@ export default {
           iosUrlScheme: 'com.googleusercontent.apps.860179123284-k5k7o8hmbvukvee5ok3jn0r049e7p9uj'
         }
       ],
-      [
-        'react-native-fbsdk-next',
-        {
-          appID: process.env.EXPO_PUBLIC_FACEBOOK_APP_ID || '123456789012345',
-          clientToken: process.env.FACEBOOK_CLIENT_TOKEN || 'dummy_client_token',
-          displayName: 'Pyklr',
-          scheme: process.env.EXPO_PUBLIC_FACEBOOK_APP_ID ? `fb${process.env.EXPO_PUBLIC_FACEBOOK_APP_ID}` : 'fb123456789012345'
-        }
-      ]
     ],
     experiments: {
       typedRoutes: true
