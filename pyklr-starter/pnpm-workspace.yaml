@@ -2,9 +2,13 @@ packages:
   - 'apps/*'
   - 'packages/*'
 
-# Moved here from package.json's "pnpm" field: pnpm 10+ no longer reads that
-# field and was silently ignoring this patch. Without it, a clean install
-# restores the unpatched react-native-css-interop babel.js, which references
-# "react-native-worklets/plugin" and breaks the build on RN 0.74 / reanimated 3.
+# NOTE: this patch is declared in BOTH pnpm-workspace.yaml and package.json's
+# "pnpm" field, on purpose. packageManager pins pnpm@9.0.0, which EAS Build
+# enforces via corepack — and pnpm 9 reads patchedDependencies ONLY from
+# package.json. pnpm 10 (what runs locally) reads it ONLY from here. Declaring
+# it in one place silently skips the patch on the other, which restores the
+# unpatched react-native-css-interop babel.js — it references
+# "react-native-worklets/plugin", a package this project removed, and the
+# Metro bundle then fails. Keep the two entries identical.
 patchedDependencies:
   react-native-css-interop@0.2.4: patches/react-native-css-interop@0.2.4.patch

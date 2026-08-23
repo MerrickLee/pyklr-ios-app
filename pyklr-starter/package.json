@@ -26,5 +26,10 @@
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=9.0.0"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "react-native-css-interop@0.2.4": "patches/react-native-css-interop@0.2.4.patch"
+    }
   }
 }
