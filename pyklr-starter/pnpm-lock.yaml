@@ -4,11 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-patchedDependencies:
-  react-native-fbsdk-next@13.4.3:
-    hash: ecbwjtsxsgkpbvud6mo5cpzimu
-    path: patches/react-native-fbsdk-next@13.4.3.patch
-
 importers:
 
   .:
