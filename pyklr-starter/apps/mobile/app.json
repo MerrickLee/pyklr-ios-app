@@ -13,21 +13,41 @@
       "resizeMode": "contain",
       "backgroundColor": "#4493CC"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "app.pyklr.ios",
-      "associatedDomains": ["applinks:pyklr.app"],
+      "associatedDomains": [
+        "applinks:pyklr.app",
+        "applinks:pyklr.app"
+      ],
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "PYKLR uses your location to show nearby pickleball courts and players.",
         "NSCameraUsageDescription": "PYKLR uses the camera to take photos for your profile and to add new courts.",
         "NSPhotoLibraryUsageDescription": "PYKLR uses your photo library to add a profile picture and court photos.",
         "NSContactsUsageDescription": "PYKLR uses your contacts to help you invite friends to play.",
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "SKAdNetworkItems": [
+          {
+            "SKAdNetworkIdentifier": "v9wttpbfk9.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "n38lu8286q.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "v9wttpbfk9.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "n38lu8286q.skadnetwork"
+          }
+        ]
       },
       "config": {
         "usesNonExemptEncryption": false
-      }
+      },
+      "runtimeVersion": "1.0.0"
     },
     "android": {
       "package": "app.pyklr.android",
@@ -36,12 +56,22 @@
         "backgroundColor": "#4493CC"
       },
       "permissions": [
-        "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION",
-        "CAMERA",
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE",
-        "POST_NOTIFICATIONS"
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.INTERNET"
       ],
       "intentFilters": [
         {
@@ -53,9 +83,29 @@
               "host": "pyklr.app"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        },
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "pyklr.app"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
-      ]
+      ],
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "web": {
       "bundler": "metro",
@@ -110,6 +160,9 @@
         "projectId": "b9fafd08-47ca-4058-bf43-91b826b14961"
       }
     },
-    "owner": "merricklee"
+    "owner": "merricklee",
+    "updates": {
+      "url": "https://u.expo.dev/b9fafd08-47ca-4058-bf43-91b826b14961"
+    }
   }
 }
