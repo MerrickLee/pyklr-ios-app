@@ -7,7 +7,7 @@ export default {
     icon: './assets/logos/pyklr-app-icon.png',
     scheme: 'pyklr',
     userInterfaceStyle: 'automatic',
-    newArchEnabled: false,
+    newArchEnabled: true,
     splash: {
       image: './assets/logos/pyklr-app-icon.png',
       resizeMode: 'contain',
