@@ -13,9 +13,6 @@ export default {
       resizeMode: 'contain',
       backgroundColor: '#4493CC'
     },
-    assetBundlePatterns: [
-      '**/*'
-    ],
     ios: {
       supportsTablet: false,
       bundleIdentifier: 'app.pyklr.ios',
@@ -113,6 +110,8 @@ export default {
           iosUrlScheme: 'com.googleusercontent.apps.860179123284-k5k7o8hmbvukvee5ok3jn0r049e7p9uj'
         }
       ],
+      '@react-native-community/datetimepicker',
+      '@sentry/react-native',
     ],
     experiments: {
       typedRoutes: true
