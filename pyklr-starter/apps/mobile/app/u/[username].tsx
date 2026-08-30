@@ -256,7 +256,7 @@ export default function PublicProfileScreen() {
                           .single();
 
                         if (error || !newChat) {
-                          Alert.alert('Error', 'Could not start a conversation. Please try again.');
+                          Alert.alert('Error', `Could not start a conversation: ${error?.message || 'Unknown error'}`);
                           return;
                         }
 

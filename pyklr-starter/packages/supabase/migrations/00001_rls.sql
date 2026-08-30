@@ -170,22 +170,18 @@ CREATE POLICY event_rsvps_delete ON event_rsvps FOR DELETE
 -- ============================================================
 ALTER TABLE chats ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY chats_select ON chats FOR SELECT
-  USING (created_by = auth.uid() OR is_chat_member(id) OR is_admin());
-
 CREATE POLICY chats_insert ON chats FOR INSERT
   WITH CHECK (created_by = auth.uid());
-
+CREATE POLICY chats_select ON chats FOR SELECT
+  USING (created_by = auth.uid() OR is_chat_member(id) OR is_admin());
 CREATE POLICY chats_update ON chats FOR UPDATE
-  USING (
-    EXISTS (
-      SELECT 1 FROM chat_members
-      WHERE chat_id = chats.id
-        AND user_id = auth.uid()
-        AND role IN ('owner', 'admin')
-    )
-  );
+  USING (is_chat_admin(id) OR is_admin());
+CREATE POLICY chats_delete ON chats FOR DELETE
+  USING (created_by = auth.uid() OR is_admin());
 
+-- ============================================================
+-- CHAT MEMBERS
+-- ============================================================
 ALTER TABLE chat_members ENABLE ROW LEVEL SECURITY;
 CREATE POLICY chat_members_select ON chat_members FOR SELECT
   USING (is_chat_member(chat_id) OR user_id = auth.uid() OR is_admin());
@@ -193,23 +189,18 @@ CREATE POLICY chat_members_select ON chat_members FOR SELECT
 CREATE POLICY chat_members_insert ON chat_members FOR INSERT
   WITH CHECK (
     user_id = auth.uid()
-    OR EXISTS (
-      SELECT 1 FROM chat_members cm
-      WHERE cm.chat_id = chat_members.chat_id
-        AND cm.user_id = auth.uid()
-        AND cm.role IN ('owner', 'admin')
-    )
+    OR is_chat_admin(chat_id)
+    OR is_chat_creator(chat_id)
   );
+
+CREATE POLICY chat_members_update ON chat_members FOR UPDATE
+  USING (is_chat_admin(chat_id) OR is_admin());
 
 CREATE POLICY chat_members_delete ON chat_members FOR DELETE
   USING (
     user_id = auth.uid()  -- you can always leave
-    OR EXISTS (
-      SELECT 1 FROM chat_members cm
-      WHERE cm.chat_id = chat_members.chat_id
-        AND cm.user_id = auth.uid()
-        AND cm.role IN ('owner', 'admin')
-    )
+    OR is_chat_admin(chat_id)
+    OR is_admin()
   );
 
 -- THE WEDGE: mutes are private to the muter, full CRUD only by the muter.

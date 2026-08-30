@@ -78,7 +78,7 @@ export function useChat(chatId: string): UseChatResult {
     load();
 
     const channel = supabase
-      .channel(`chat:${chatId}`)
+      .channel(`chat:${chatId}-${Date.now()}`)
       .on(
         'postgres_changes',
         {

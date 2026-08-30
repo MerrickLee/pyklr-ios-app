@@ -10,6 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { FlashList } from '@shopify/flash-list';
+import Animated, { FadeInUp, Layout } from 'react-native-reanimated';
 import {
   ChevronLeft,
   MoreVertical,
@@ -166,11 +167,13 @@ export default function ChatThreadScreen() {
                 subtitle?: string;
               };
               return (
-                <SmartSuggestionCard
-                  title={payload.title ?? item.body ?? 'Create an event'}
-                  subtitle={payload.subtitle ?? 'Tap to schedule'}
-                  payload={item.suggestion_payload as Record<string, unknown>}
-                />
+                <Animated.View entering={FadeInUp} layout={Layout.springify()}>
+                  <SmartSuggestionCard
+                    title={payload.title ?? item.body ?? 'Create an event'}
+                    subtitle={payload.subtitle ?? 'Tap to schedule'}
+                    payload={item.suggestion_payload as Record<string, unknown>}
+                  />
+                </Animated.View>
               );
             }
 
@@ -178,10 +181,12 @@ export default function ChatThreadScreen() {
             if (item.sender_id && mutedUserIds.has(item.sender_id) && !isOwn) {
               const sender = memberMap.get(item.sender_id);
               return (
-                <MutedMessagePill
-                  senderName={sender?.displayName ?? 'Muted user'}
-                  body={item.body ?? ''}
-                />
+                <Animated.View entering={FadeInUp} layout={Layout.springify()}>
+                  <MutedMessagePill
+                    senderName={sender?.displayName ?? 'Muted user'}
+                    body={item.body ?? ''}
+                  />
+                </Animated.View>
               );
             }
 
@@ -189,20 +194,22 @@ export default function ChatThreadScreen() {
             const sender = item.sender_id ? memberMap.get(item.sender_id) : null;
             const messageReactions = getReactionsForMessage(item.id);
             return (
-              <MessageBubble
-                messageId={item.id}
-                senderName={sender?.displayName ?? 'Unknown'}
-                senderAvatarUrl={sender?.avatarUrl}
-                body={item.body ?? ''}
-                timestamp={
-                  item.created_at
-                    ? formatDistanceToNow(new Date(item.created_at), { addSuffix: true })
-                    : ''
-                }
-                isOwn={isOwn}
-                reactions={messageReactions}
-                onReact={(emoji) => toggleReaction(item.id, emoji)}
-              />
+              <Animated.View entering={FadeInUp} layout={Layout.springify()}>
+                <MessageBubble
+                  messageId={item.id}
+                  senderName={sender?.displayName ?? 'Unknown'}
+                  senderAvatarUrl={sender?.avatarUrl}
+                  body={item.body ?? ''}
+                  timestamp={
+                    item.created_at
+                      ? formatDistanceToNow(new Date(item.created_at), { addSuffix: true })
+                      : ''
+                  }
+                  isOwn={isOwn}
+                  reactions={messageReactions}
+                  onReact={(emoji) => toggleReaction(item.id, emoji)}
+                />
+              </Animated.View>
             );
           }}
           ListEmptyComponent={
@@ -272,5 +279,22 @@ export default function ChatThreadScreen() {
         chatName={chatName}
       />
     </SafeAreaView>
+  );
+}
+
+export function ErrorBoundary(props: { error: Error; retry: () => void }) {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000', padding: 20 }}>
+      <Text style={{ color: '#F87171', fontSize: 16, fontWeight: 'bold', marginBottom: 10 }}>Chat Screen Error</Text>
+      <Text style={{ color: '#FFF', fontSize: 14, textAlign: 'center', marginBottom: 20 }}>
+        {props.error?.message || JSON.stringify(props.error) || 'Unknown error'}
+      </Text>
+      <Pressable 
+        onPress={props.retry}
+        style={{ backgroundColor: '#22C55E', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 8 }}
+      >
+        <Text style={{ color: '#000', fontWeight: 'bold' }}>Try Again</Text>
+      </Pressable>
+    </View>
   );
 }

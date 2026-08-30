@@ -114,7 +114,7 @@ export function useChats() {
     if (!user) return;
 
     const channel = supabase
-      .channel('chats-list-updates')
+      .channel(`chats-list-updates-${Date.now()}`)
       .on(
         'postgres_changes',
         {
