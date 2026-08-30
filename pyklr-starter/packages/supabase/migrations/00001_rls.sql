@@ -171,7 +171,7 @@ CREATE POLICY event_rsvps_delete ON event_rsvps FOR DELETE
 ALTER TABLE chats ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY chats_select ON chats FOR SELECT
-  USING (is_chat_member(id) OR is_admin());
+  USING (created_by = auth.uid() OR is_chat_member(id) OR is_admin());
 
 CREATE POLICY chats_insert ON chats FOR INSERT
   WITH CHECK (created_by = auth.uid());

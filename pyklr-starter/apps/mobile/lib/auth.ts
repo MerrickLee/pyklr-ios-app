@@ -2,6 +2,7 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 import { Platform } from 'react-native';
 import { supabase } from './supabase';
 import Constants from 'expo-constants';
+import { track, resetIdentity } from './analytics';
 
 const isExpoGo = Constants.appOwnership === 'expo';
 
@@ -91,6 +92,7 @@ export async function signInWithEmail(
   password: string
 ): Promise<{ error: Error | null }> {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (!error) track('auth.sign_in');
   return { error };
 }
 
@@ -105,9 +107,12 @@ export async function signUpWithEmail(
       emailRedirectTo: `${process.env.EXPO_PUBLIC_DEEP_LINK_SCHEME}://auth/callback`,
     },
   });
+  if (!error) track('auth.sign_up');
   return { error };
 }
 
 export async function signOut(): Promise<void> {
+  track('auth.sign_out');
+  resetIdentity();
   await supabase.auth.signOut();
 }

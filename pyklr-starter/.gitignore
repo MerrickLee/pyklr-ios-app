@@ -56,3 +56,21 @@ packages/supabase/.temp
 *.mobileprovision
 *.cer
 credentials/
+
+# Python virtualenv and scratch tooling — these are local debugging artifacts
+# created during the SDK 54 upgrade, not part of the app. A committed venv/ adds
+# ~850 third-party files (this is what produced the 605-file diff in GitHub Desktop).
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Build and debug logs
+xcodebuild.log
+xcodebuild_error_*.log
+
+# Local expect/python helper scripts
+*.exp
+
+# Editing backups
+*.bak-*
