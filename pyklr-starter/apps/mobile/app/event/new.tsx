@@ -154,6 +154,7 @@ export default function NewEventScreen() {
     }
 
     setSaving(false);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     track('event.created');
     Alert.alert('Event created! 🎉', 'Your event is live and a group chat has been created.', [
       { text: 'View event', onPress: () => router.replace(`/event/${data?.id}` as never) },

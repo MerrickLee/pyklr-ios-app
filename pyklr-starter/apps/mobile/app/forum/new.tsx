@@ -61,6 +61,7 @@ export default function NewForumPostScreen() {
     if (error) {
       Alert.alert('Error', error.message);
     } else {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       track('forum.post_created');
       Alert.alert('Posted! 🎉', 'Your post is now live in the community.', [
         { text: 'View', onPress: () => router.replace(`/p/${data?.id}` as never) },

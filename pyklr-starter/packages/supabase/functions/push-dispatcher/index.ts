@@ -10,9 +10,17 @@
 // ============================================================
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.43.0';
+import * as jose from 'https://deno.land/x/jose@v5.2.3/index.ts';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+
+const APNS_KEY_ID = Deno.env.get('APNS_KEY_ID')!;
+const APNS_TEAM_ID = Deno.env.get('APNS_TEAM_ID')!;
+const APNS_BUNDLE_ID = Deno.env.get('APNS_BUNDLE_ID')!;
+const APNS_KEY = Deno.env.get('APNS_KEY')!; // The .p8 key contents (e.g., passed as base64 or raw string)
+const APNS_TOPIC = APNS_BUNDLE_ID;
+const IS_PRODUCTION = Deno.env.get('NODE_ENV') === 'production';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: { persistSession: false },
@@ -70,6 +78,49 @@ function defaultTitle(type: string): string {
   }
 }
 
+async function sendApnsPush(token: string, title: string, body: string, data: any) {
+  // Parse the private key
+  const privateKey = await jose.importPKCS8(APNS_KEY.replace(/\\n/g, '\n'), 'ES256');
+  
+  // Generate JWT token
+  const jwt = await new jose.SignJWT({})
+    .setProtectedHeader({ alg: 'ES256', kid: APNS_KEY_ID })
+    .setIssuer(APNS_TEAM_ID)
+    .setIssuedAt()
+    .sign(privateKey);
+
+  const apnsEnv = IS_PRODUCTION ? 'api.push.apple.com' : 'api.development.push.apple.com';
+  const url = `https://${apnsEnv}/3/device/${token}`;
+
+  const payload = {
+    aps: {
+      alert: {
+        title,
+        body,
+      },
+      badge: 1,
+      sound: 'default',
+    },
+    ...data,
+  };
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'authorization': `bearer ${jwt}`,
+      'apns-topic': APNS_TOPIC,
+      'apns-push-type': 'alert',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error(`APNs failed for token ${token}:`, response.status, errorText);
+  }
+  return response.ok;
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 });
@@ -112,29 +163,21 @@ Deno.serve(async (req: Request) => {
     return new Response('no push tokens', { status: 200 });
   }
 
-  // Construct Expo Push messages
   const link = deepLinkFor(notif.target_type, notif.target_id);
-  const messages = tokens.map((t) => ({
-    to: t.token,
-    sound: 'default',
-    title: defaultTitle(notif.type),
-    body: notif.body ?? '',
-    data: link ? { deepLink: link, notificationId: notif.id } : { notificationId: notif.id },
-    badge: 1,
-  }));
+  const title = defaultTitle(notif.type);
+  const body = notif.body ?? '';
+  const data = link ? { deepLink: link, notificationId: notif.id } : { notificationId: notif.id };
 
-  // Send to Expo Push API
-  const response = await fetch('https://exp.host/--/api/v2/push/send', {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Accept-Encoding': 'gzip, deflate',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(messages),
-  });
+  let successCount = 0;
 
-  const result = await response.json();
+  for (const t of tokens) {
+    if (t.platform === 'ios') {
+      const ok = await sendApnsPush(t.token, title, body, data);
+      if (ok) successCount++;
+    } else {
+      // Handle Android/FCM here later if needed
+    }
+  }
 
   // Update last_used_at on the tokens we just used
   await supabase
@@ -142,7 +185,8 @@ Deno.serve(async (req: Request) => {
     .update({ last_used_at: new Date().toISOString() })
     .eq('user_id', notif.recipient_id);
 
-  return new Response(JSON.stringify({ ok: true, dispatched: messages.length, expoResponse: result }), {
+  return new Response(JSON.stringify({ ok: true, dispatched: successCount }), {
     headers: { 'Content-Type': 'application/json' },
   });
 });
+

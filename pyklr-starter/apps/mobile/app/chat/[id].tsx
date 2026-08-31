@@ -1,4 +1,5 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react';
+import * as Haptics from 'expo-haptics';
 import {
   View,
   Text,
@@ -80,6 +81,7 @@ export default function ChatThreadScreen() {
   async function handleSend() {
     const text = draft.trim();
     if (!text) return;
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setDraft('');
     const { error } = await send(text);
     if (error) {

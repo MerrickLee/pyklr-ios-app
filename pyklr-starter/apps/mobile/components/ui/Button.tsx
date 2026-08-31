@@ -1,5 +1,6 @@
 import React from 'react';
-import { TouchableOpacity, Text, ActivityIndicator, type TouchableOpacityProps, type GestureResponderEvent } from 'react-native';
+import { Pressable, Text, ActivityIndicator, type PressableProps, type GestureResponderEvent } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring, LinearTransition } from 'react-native-reanimated';
 import { useTheme } from '@/theme/useTheme';
 import { colors } from '@/theme/tokens';
 import { track } from '@/lib/analytics';
@@ -7,7 +8,7 @@ import { track } from '@/lib/analytics';
 export type ButtonVariant = 'primary' | 'ghost' | 'secondary';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
-interface ButtonProps extends Omit<TouchableOpacityProps, 'children'> {
+interface ButtonProps extends Omit<PressableProps, 'children'> {
   label: string;
   variant?: ButtonVariant;
   size?: ButtonSize;
@@ -15,6 +16,8 @@ interface ButtonProps extends Omit<TouchableOpacityProps, 'children'> {
   fullWidth?: boolean;
   icon?: React.ReactNode;
 }
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export function Button({
   label,
@@ -25,6 +28,8 @@ export function Button({
   disabled,
   icon,
   onPress,
+  onPressIn,
+  onPressOut,
   ...rest
 }: ButtonProps) {
   const { scheme } = useTheme();
@@ -56,6 +61,24 @@ export function Button({
       break;
   }
 
+  const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    };
+  });
+
+  function handlePressIn(e: GestureResponderEvent) {
+    scale.value = withSpring(0.95, { damping: 12, stiffness: 300 });
+    if (onPressIn) onPressIn(e);
+  }
+
+  function handlePressOut(e: GestureResponderEvent) {
+    scale.value = withSpring(1, { damping: 12, stiffness: 300 });
+    if (onPressOut) onPressOut(e);
+  }
+
   function handlePress(e: GestureResponderEvent) {
     track('ui.button_clicked', {
       label,
@@ -68,24 +91,29 @@ export function Button({
   }
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.8}
+    <AnimatedPressable
       disabled={disabled || loading}
       onPress={handlePress}
-      style={{
-        height: heights[size],
-        paddingHorizontal: paddings[size],
-        borderRadius: 16,
-        backgroundColor: bg,
-        borderWidth: borderColor ? 1.5 : 0,
-        borderColor,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 8,
-        opacity: disabled ? 0.5 : 1,
-        width: fullWidth ? '100%' : undefined,
-      }}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      layout={LinearTransition.springify()}
+      style={[
+        {
+          height: heights[size],
+          paddingHorizontal: paddings[size],
+          borderRadius: 16,
+          backgroundColor: bg,
+          borderWidth: borderColor ? 1.5 : 0,
+          borderColor,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 8,
+          opacity: disabled ? 0.5 : 1,
+          width: fullWidth ? '100%' : undefined,
+        },
+        animatedStyle,
+      ]}
       {...rest}
     >
       {loading ? (
@@ -104,6 +132,6 @@ export function Button({
           </Text>
         </>
       )}
-    </TouchableOpacity>
+    </AnimatedPressable>
   );
 }

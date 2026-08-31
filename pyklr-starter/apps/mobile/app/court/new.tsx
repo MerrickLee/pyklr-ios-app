@@ -100,6 +100,7 @@ export default function NewCourtScreen() {
     if (error) {
       Alert.alert('Error', error.message);
     } else {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       track('court.submitted');
       Alert.alert('Submitted!', 'Your court will be reviewed by a moderator.', [
         { text: 'OK', onPress: () => router.back() },

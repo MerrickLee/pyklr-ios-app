@@ -196,7 +196,7 @@ export default function PublicProfileScreen() {
               <View style={{ flexDirection: 'row', gap: 8, marginTop: 20 }}>
                 <View style={{ flex: 1 }}>
                   <Button
-                    label={isFollowing ? 'Following' : 'Follow'}
+                    label={isFollowing ? 'Unfollow' : 'Follow'}
                     variant={isFollowing ? 'ghost' : 'primary'}
                     size="md"
                     onPress={toggleFollow}
